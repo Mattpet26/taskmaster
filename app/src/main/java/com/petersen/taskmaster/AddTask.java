@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,9 +15,18 @@ import android.widget.Toast;
 public class AddTask extends AppCompatActivity {
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent = new Intent(AddTask.this, MainActivity.class);
+        AddTask.this.startActivity(intent);
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Button add_task_button = AddTask.this.findViewById(R.id.add_task_button);
         add_task_button.setOnClickListener(new View.OnClickListener() {
@@ -40,5 +50,6 @@ public class AddTask extends AppCompatActivity {
 //                task_name.setText(intent.getExtras().getString("title"));
             }
         });
+
     }
 }
