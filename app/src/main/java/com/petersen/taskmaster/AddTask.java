@@ -29,7 +29,9 @@ public class AddTask extends AppCompatActivity {
                 String description = itemDescriptionInput.getText().toString();
 
                 System.out.println(String.format("task title is %s , description is %s", taskName, description));
-                // on click create a element with text
+
+                TextView showSubmit = AddTask.this.findViewById(R.id.show_submit);
+                showSubmit.setVisibility(View.VISIBLE);
 //                Intent intent = getIntent();
 //                intent.putExtra("title", taskName);
 //                intent.putExtra("description", description);
