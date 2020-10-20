@@ -5,4 +5,6 @@
 - Users can navigate between pages with buttons on homepage.
 - User is notified when a task is added.
 
--![taskImage]()
+-![taskImage](../screenshots/addTask.PNG)
+-![taskImage](../screenshots/homepage.PNG)
+-![taskImage](../screenshots/allTask.PNG)
