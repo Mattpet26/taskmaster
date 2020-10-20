@@ -1,4 +1,4 @@
-# TaskMaster change log
+# TaskMaster change log (I will delete it every other day, just to keep track of what I did the previous day)
 
 * 10/19/2020
 * Added 3 pages. (Main, all tasks, add task)
@@ -28,5 +28,6 @@
 ## Screen shots of working app
 * ![taskImage](screenshots/addTask.PNG)
 * ![taskImage](screenshots/homepage.PNG)
+* ![taskImage](screenshots/detailsPage.PNG)
 * ![taskImage](screenshots/allTask.PNG)
 * ![taskImage](screenshots/submitWorking.PNG)
