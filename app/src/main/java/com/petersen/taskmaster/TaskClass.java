@@ -1,6 +1,15 @@
 package com.petersen.taskmaster;
 
+
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity
 public class TaskClass {
+
+    @PrimaryKey(autoGenerate = true)
+    long id;
+
     public String title;
     public String description;
     public String state;

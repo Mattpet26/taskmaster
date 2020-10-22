@@ -26,6 +26,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="task title "
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintEnd_toStartOf="@+id/task_state"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +38,9 @@
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:text="task state"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.705"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

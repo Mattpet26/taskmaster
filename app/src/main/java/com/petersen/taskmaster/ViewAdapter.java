@@ -23,6 +23,7 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.AdapterViewHol
         public TaskClass taskClass;
         public View itemView;
 
+
         public AdapterViewHolder(@NonNull View itemView) {
             super(itemView);
             this.itemView = itemView;
@@ -37,7 +38,9 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.AdapterViewHol
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_task, parent, false);
 
+
         final AdapterViewHolder viewHolder = new AdapterViewHolder(view);
+
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,6 +57,7 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.AdapterViewHol
         public void taskListener(TaskClass taskClass);
     }
 
+
     @Override
     // This gets called when a fragment(list item) has a java class attached to it
     public void onBindViewHolder(@NonNull AdapterViewHolder holder, int position) {                  // position is the position in the array
@@ -62,7 +66,6 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.AdapterViewHol
         TextView itemTitle = holder.itemView.findViewById(R.id.task_title);
         TextView itemDescription = holder.itemView.findViewById(R.id.task_description);
         TextView itemState = holder.itemView.findViewById(R.id.task_state);
-
         itemTitle.setText(holder.taskClass.title);
         itemDescription.setText(holder.taskClass.description);
         itemState.setText(holder.taskClass.state);
@@ -71,7 +74,7 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.AdapterViewHol
     @Override
     // This gets called so it knows how many fragments (list item) to put on the screen at once
     public int getItemCount() {
-        return listOfTasks.size(); //TODO: make this return the list length
+        return listOfTasks.size();
     }
 }
 

@@ -93,4 +93,16 @@
         app:layout_constraintStart_toEndOf="@+id/add_task_button"
         app:layout_constraintTop_toBottomOf="@+id/editTaskDescription" />
 
+    <EditText
+        android:id="@+id/editTaskState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="task status"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/total_task_count" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
