@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_list"
+        android:layout_width="312dp"
+        android:layout_height="497dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/recycler_view_item" />
+
     <TextView
         android:id="@+id/user_task_list"
         android:layout_width="wrap_content"
@@ -26,8 +37,6 @@
         android:text="All Tasks"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/task_3_button"
         app:layout_constraintTop_toTopOf="@+id/setting_button"
         app:layout_constraintVertical_bias="0.0" />
 
@@ -54,71 +63,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/setting_button"
         app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/task1"
-        android:layout_width="160dp"
-        android:layout_height="36dp"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="40dp"
-        android:text="Fold the dishes"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user_task_list" />
-
-    <Button
-        android:id="@+id/task_3_button"
-        android:layout_width="84dp"
-        android:layout_height="37dp"
-        android:layout_marginTop="32dp"
-        android:text="view task"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.385"
-        app:layout_constraintStart_toEndOf="@+id/task3"
-        app:layout_constraintTop_toBottomOf="@+id/task_2_button" />
-
-    <TextView
-        android:id="@+id/task3"
-        android:layout_width="167dp"
-        android:layout_height="37dp"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="40dp"
-        android:text="Vacuum the roof"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/task2" />
-
-    <Button
-        android:id="@+id/task_1_button"
-        android:layout_width="84dp"
-        android:layout_height="37dp"
-        android:layout_marginTop="40dp"
-        android:text="view task"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.385"
-        app:layout_constraintStart_toEndOf="@+id/task1"
-        app:layout_constraintTop_toBottomOf="@+id/user_task_list" />
-
-    <Button
-        android:id="@+id/task_2_button"
-        android:layout_width="84dp"
-        android:layout_height="37dp"
-        android:layout_marginTop="32dp"
-        android:text="view task"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.385"
-        app:layout_constraintStart_toEndOf="@+id/task2"
-        app:layout_constraintTop_toBottomOf="@+id/task_1_button" />
-
-    <TextView
-        android:id="@+id/task2"
-        android:layout_width="165dp"
-        android:layout_height="34dp"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="36dp"
-        android:text="Mow the carpet"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/task1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
