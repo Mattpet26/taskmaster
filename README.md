@@ -1,15 +1,14 @@
 # TaskMaster change log (I will delete it every other day, just to keep track of what I did the previous day)
 
-* 10/19/2020
-* Added 3 pages. (Main, all tasks, add task)
-* Users can add a task to their tasks. (system printing to show the task)
-* Users can navigate between pages with buttons on homepage.
-* User is notified when a task is added.
-
 * 10/20/2020
 * Added more pages. (settings, details)
 * HardCoded tasks in main page. Tasks when clicked will direct to details page.
 * Users can login and be directed back to the main page. Username follows to home page.
+
+* 10/21/2020
+* Added ViewAdapter, TaskFragment and TaskClass
+* Home page now has a recycler view with tasks
+* Recyclerview is fully functional, each task is clickable
 
 
 
