@@ -4,6 +4,8 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
+import com.petersen.taskmaster.models.TaskClass;
+
 import java.util.List;
 
 @Dao

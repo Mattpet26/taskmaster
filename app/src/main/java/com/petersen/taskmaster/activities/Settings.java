@@ -1,4 +1,4 @@
-package com.petersen.taskmaster;
+package com.petersen.taskmaster.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,6 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.petersen.taskmaster.R;
 
 public class Settings extends AppCompatActivity {
     @Override

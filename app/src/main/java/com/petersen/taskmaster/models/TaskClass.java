@@ -1,4 +1,4 @@
-package com.petersen.taskmaster;
+package com.petersen.taskmaster.models;
 
 
 import androidx.room.Entity;
@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey;
 public class TaskClass {
 
     @PrimaryKey(autoGenerate = true)
-    long id;
+    public long id;
 
     public String title;
     public String description;

@@ -1,14 +1,10 @@
 # TaskMaster change log (I will delete it every other day, just to keep track of what I did the previous day)
 
-* 10/21/2020
-* Added ViewAdapter, TaskFragment and TaskClass
-* Home page now has a recycler view with tasks
-* Recyclerview is fully functional, each task is clickable
-
-* 10/22/2020
-* Added to the AddTask page. Users tasks are now added to database!
-* Users tasks are queried from database, and shown on home screen.
-* Created TaskClassDao, utilized Room.
+* 10/26/2020
+* Added tests. Tests are currently testing:
+* Add task - tests that users can add a task and view it in the recycler.
+* Recycler - tests that information is added, visible, and clickable.
+* Settings - tests that users can change their username and is displayed in the main activity.
 
 
 ## How to run the app
@@ -25,7 +21,7 @@
 
 ## Screen shots of working app
 * ![taskImage](screenshots/addTask.PNG)
-* ![taskImage](screenshots/homepage.PNG)
+* ![taskImage](screenshots/recyclerWorking.PNG)
 * ![taskImage](screenshots/detailsPage.PNG)
 * ![taskImage](screenshots/allTask.PNG)
 * ![taskImage](screenshots/submitWorking.PNG)
