@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.petersen.taskmaster.activities.MainActivity;
+
 public class TaskDetail extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -1,4 +1,4 @@
-package com.petersen.taskmaster;
+package com.petersen.taskmaster.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,19 +8,28 @@ import androidx.room.Room;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.amplifyframework.AmplifyException;
+import com.amplifyframework.api.aws.AWSApiPlugin;
+import com.amplifyframework.api.graphql.model.ModelMutation;
+import com.amplifyframework.core.Amplify;
+import com.petersen.taskmaster.AllTasks;
+import com.petersen.taskmaster.Database;
+import com.petersen.taskmaster.R;
+import com.petersen.taskmaster.TaskDetail;
+import com.petersen.taskmaster.ViewAdapter;
+import com.petersen.taskmaster.models.TaskClass;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInteractWithTaskListener {
 
     Database db;
-    // do not make this static in the main activity : what if we allowed our app to accept intents from other apps
-    // and we allow them to open other pages within "MainActivity"
 
     @Override
     public void onResume() {
@@ -38,6 +47,30 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
         db = Room.databaseBuilder(getApplicationContext(), Database.class, "matthew_task_database")
                 .allowMainThreadQueries()
                 .build();
+
+//========================================================== Amplify =================================================================================
+
+//        try{
+//            Amplify.addPlugin(new AWSApiPlugin());
+//            Amplify.configure(getApplicationContext());
+//
+//            Log.i("MyAmplifyApp", "Initialized Amplify");
+//
+//            taskItem taskitem;
+//            taskitem = taskitem.builder()
+//                    .thingName("task1")
+//                    .description("do the task1 man")
+//                    .state("new")
+//                    .build()
+//            Amplify.API.mutate(
+//                    ModelMutation.create(taskitem),
+//                    response -> Log.i("MainActivityAmplify", "task1 saved!"),
+//                    error -> Log.e("MainActivityAmplify", "Oops there was an error with task1")
+//            );
+//        }catch(AmplifyException error){
+//            Log.e("MyAmplifyApp", "Could not initialize Amplify", error);
+//        }
+
 
 //===================================== recycler falls into onCreate =================================================================================
 

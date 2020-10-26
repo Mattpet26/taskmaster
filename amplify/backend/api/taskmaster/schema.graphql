@@ -1,0 +1,6 @@
+type TaskClass @model {
+  id: ID!
+  name: String!
+  description: String
+  state: String
+}
