@@ -14,7 +14,7 @@
 ## How to run the app
 * Clone the repository from the github
 ```
- git clone https://github.com/vijayetar/android_taskmaster.git
+ git clone https://github.com/mattpet26/android_taskmaster.git
 ```
 
 * Open the project using Android Studio
