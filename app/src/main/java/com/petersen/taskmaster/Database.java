@@ -2,9 +2,9 @@ package com.petersen.taskmaster;
 
 import androidx.room.RoomDatabase;
 
-import com.petersen.taskmaster.models.TaskClass;
+import com.amplifyframework.datastore.generated.model.TaskItem;
 
-@androidx.room.Database(entities = {TaskClass.class}, version = 1)
+@androidx.room.Database(entities = {TaskItem.class}, version = 2)
 public abstract class Database extends RoomDatabase {
-    public abstract TaskClassDao taskClassDao();
+    public abstract TaskItemDao taskItemDao();
 }
