@@ -1,4 +1,4 @@
-type TaskClass @model {
+type TaskItem @model {
   id: ID!
   name: String!
   description: String

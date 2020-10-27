@@ -6,23 +6,21 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.petersen.taskmaster.models.TaskClass;
-
+import com.amplifyframework.datastore.generated.model.TaskItem;
 import java.util.ArrayList;
 
 public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.AdapterViewHolder> {
-    public ArrayList<TaskClass> listOfTasks;
+    public ArrayList<TaskItem> listOfTasks;
     public OnInteractWithTaskListener listener;
 
-    public ViewAdapter(ArrayList<TaskClass> listOfTasks, OnInteractWithTaskListener listener) {
+    public ViewAdapter(ArrayList<TaskItem> listOfTasks, OnInteractWithTaskListener listener) {
         this.listOfTasks = listOfTasks;
         this.listener = listener;
     }
 
     // view holder deals with the passing of data from java to the fragment (list item)
     public static class AdapterViewHolder extends RecyclerView.ViewHolder {
-        public TaskClass taskClass;
+        public TaskItem taskClass;
         public View itemView;
 
 
@@ -47,7 +45,7 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.AdapterViewHol
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(viewHolder.taskClass.title);
+                System.out.println(viewHolder.taskClass);
                 listener.taskListener(viewHolder.taskClass);
             }
         });
@@ -56,7 +54,7 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.AdapterViewHol
     }
 
     public static interface OnInteractWithTaskListener {
-        public void taskListener(TaskClass taskClass);
+        public void taskListener(TaskItem taskClass);
     }
 
 
@@ -68,7 +66,7 @@ public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.AdapterViewHol
         TextView itemTitle = holder.itemView.findViewById(R.id.task_title);
         TextView itemDescription = holder.itemView.findViewById(R.id.task_description);
         TextView itemState = holder.itemView.findViewById(R.id.task_state);
-        itemTitle.setText(holder.taskClass.title);
+        itemTitle.setText(holder.taskClass.name);
         itemDescription.setText(holder.taskClass.description);
         itemState.setText(holder.taskClass.state);
     }

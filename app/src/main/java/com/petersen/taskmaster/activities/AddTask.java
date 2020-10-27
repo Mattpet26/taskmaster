@@ -5,15 +5,17 @@ import androidx.room.Room;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
+import com.amplifyframework.api.graphql.model.ModelMutation;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.generated.model.TaskItem;
 import com.petersen.taskmaster.R;
 import com.petersen.taskmaster.Database;
-import com.petersen.taskmaster.models.TaskClass;
 
 public class AddTask extends AppCompatActivity {
 
@@ -34,7 +36,7 @@ public class AddTask extends AppCompatActivity {
         db = Room.databaseBuilder(getApplicationContext(), Database.class, "matthew_task_database")
                 .allowMainThreadQueries()
                 .build();
-
+//================================================= Add-Task ======================================================================================
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Button add_task_button = AddTask.this.findViewById(R.id.add_task_button);
@@ -49,8 +51,25 @@ public class AddTask extends AppCompatActivity {
                 String description = itemDescriptionInput.getText().toString();
                 String state = itemState.getText().toString();
 
-                TaskClass taskClass = new TaskClass(taskName, description, state);
-                db.taskClassDao().save(taskClass);
+//                TaskClass taskClass = new TaskClass(taskName, description, state);
+//                db.taskClassDao().save(taskClass);
+
+//================================================= Amplify Add-Task =======================================================================================
+
+                    TaskItem taskClass;
+                    taskClass = TaskItem.builder()
+                            .name(taskName)
+                            .description(description)
+                            .state(state)
+                            .build();
+
+                    Amplify.API.mutate(
+                            ModelMutation.create(taskClass),
+                            response -> Log.i("AddTaskAmplify", "Your task was saved, you saved ---- " + taskName + " ----"),
+                            error -> Log.e("Amplify", error.toString()));
+                    db.taskItemDao().save(taskClass);
+
+
 //              tasks.add(0, taskClass);    <---- do this step if the recycler is on the same page as the submit button
 //              recyclerView.getAdapter().notifyItemInserted(0);
 //              recyclerView.smoothScrollToPosition(0);
