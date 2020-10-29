@@ -1,4 +1,4 @@
-package com.petersen.taskmaster;
+package com.petersen.taskmaster.database;
 
 import androidx.room.Dao;
 import androidx.room.Insert;

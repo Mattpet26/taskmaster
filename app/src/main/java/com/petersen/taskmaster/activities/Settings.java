@@ -43,6 +43,20 @@ public class Settings extends AppCompatActivity {
                 Settings.this.startActivity(goHome);
             }
         });
+        Button store1 = Settings.this.findViewById(R.id.store1);
+        store1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                if(storeWeAreOnIndex > 0){
+//                storeWeAreOnIndex --;
+//                tasks.clear();
+//                for(TaskItem item : stores.get(storeWeAreOnIndex).getCheapItems()){
+//                tasks.add(item);
+//                recyclerView.getAdapter().notifyDataSetChanged();
 
+                Intent goHome = new Intent(Settings.this, MainActivity.class);
+                Settings.this.startActivity(goHome);
+            }
+        });
     }
 }

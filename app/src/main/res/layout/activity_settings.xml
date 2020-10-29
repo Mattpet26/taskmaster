@@ -49,4 +49,52 @@
         app:layout_constraintHorizontal_bias="0.046"
         app:layout_constraintStart_toEndOf="@+id/editUsernameText"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/store1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="52dp"
+        android:text="Red"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editUsernameText"
+        app:layout_constraintVertical_bias="0.004" />
+
+    <Button
+        android:id="@+id/store2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:text="Blue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/store3"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toEndOf="@+id/store1"
+        app:layout_constraintTop_toBottomOf="@+id/editUsernameText"
+        app:layout_constraintVertical_bias="0.004" />
+
+    <Button
+        android:id="@+id/store3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="24dp"
+        android:text="Green"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editUsernameText"
+        app:layout_constraintVertical_bias="0.004" />
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="Select a Team"
+        app:layout_constraintBottom_toTopOf="@+id/store2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editUsernameText" />
 </androidx.constraintlayout.widget.ConstraintLayout>

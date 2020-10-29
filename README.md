@@ -1,20 +1,19 @@
 # TaskMaster change log (I will delete it every other day, just to keep track of what I did the previous day)
 
-* 10/26/2020
-* Added tests. Tests are currently testing:
-* Add task - tests that users can add a task and view it in the recycler.
-* Recycler - tests that information is added, visible, and clickable.
-* Settings - tests that users can change their username and is displayed in the main activity.
-
 * 10/27/2020
 * Modified add task form to save the data entered in as a task to DynamoDB
 * Refactored homepage's recyclerView to display all task entities in DynamoDB
 * Added amplify to app
 
+* 10/28/2020
+* Added Teams to taskmaster
+* Added radio-buttons to addTask page
+* Added buttons for each team in settings
+
 ## How to run the app
 * Clone the repository from the github
 ```
- git clone https://github.com/vijayetar/android_taskmaster.git
+ git clone https://github.com/mattpet26/android_taskmaster.git
 ```
 
 * Open the project using Android Studio

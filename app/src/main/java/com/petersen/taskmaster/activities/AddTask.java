@@ -1,7 +1,6 @@
 package com.petersen.taskmaster.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.room.Room;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,16 +9,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.amplifyframework.api.graphql.model.ModelMutation;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.TaskItem;
+import com.amplifyframework.datastore.generated.model.Team;
 import com.petersen.taskmaster.R;
-import com.petersen.taskmaster.Database;
+
+import java.util.ArrayList;
 
 public class AddTask extends AppCompatActivity {
 
-    Database db;
+//    Database db;
+    ArrayList<Team> teams;
+    private RadioGroup radioTeamGroup;
+    private RadioButton radioTeamButton;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -33,9 +41,6 @@ public class AddTask extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
 
-        db = Room.databaseBuilder(getApplicationContext(), Database.class, "matthew_task_database")
-                .allowMainThreadQueries()
-                .build();
 //================================================= Add-Task ======================================================================================
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -51,9 +56,18 @@ public class AddTask extends AppCompatActivity {
                 String description = itemDescriptionInput.getText().toString();
                 String state = itemState.getText().toString();
 
-//                TaskClass taskClass = new TaskClass(taskName, description, state);
-//                db.taskClassDao().save(taskClass);
-
+                int selectedId = radioTeamGroup.getCheckedRadioButtonId();
+                if (selectedId == -1) {
+                    Toast.makeText(AddTask.this,
+                            "No answer has been selected",
+                            Toast.LENGTH_SHORT)
+                            .show();
+                }
+                else {
+                    RadioButton radioButton
+                            = (RadioButton)radioTeamGroup
+                            .findViewById(selectedId);
+                }
 //================================================= Amplify Add-Task =======================================================================================
 
                     TaskItem taskClass;
@@ -61,24 +75,72 @@ public class AddTask extends AppCompatActivity {
                             .name(taskName)
                             .description(description)
                             .state(state)
+                            .foundAt(radioTeamGroup.getId(selectedId))
                             .build();
 
                     Amplify.API.mutate(
                             ModelMutation.create(taskClass),
                             response -> Log.i("AddTaskAmplify", "Your task was saved, you saved ---- " + taskName + " ----"),
                             error -> Log.e("Amplify", error.toString()));
-                    db.taskItemDao().save(taskClass);
-
-
-//              tasks.add(0, taskClass);    <---- do this step if the recycler is on the same page as the submit button
-//              recyclerView.getAdapter().notifyItemInserted(0);
-//              recyclerView.smoothScrollToPosition(0);
+//                    db.taskItemDao().save(taskClass);
 
                 System.out.println(String.format("task title is %s , description is %s", taskName, description));
                 TextView showSubmit = AddTask.this.findViewById(R.id.show_submit);
                 showSubmit.setVisibility(View.VISIBLE);
             }
         });
+//========================================================== Radio Buttons ========================================================================================
 
+        RadioButton button1 = AddTask.this.findViewById(R.id.radioButton1);
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Team teams;
+                teams = Team.builder()
+                        .name("Red")
+                        .build();
+
+                Amplify.API.mutate(
+                        ModelMutation.create(teams),
+                        response -> Log.i("AddTaskAmplify", "You chose RED team!"),
+                        error -> Log.e("Amplify", error.toString()));
+
+                System.out.println("Red team was chosen");
+            }
+        });
+        RadioButton button2 = AddTask.this.findViewById(R.id.radioButton2);
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Team teams;
+                teams = Team.builder()
+                        .name("Blue")
+                        .build();
+
+                Amplify.API.mutate(
+                        ModelMutation.create(teams),
+                        response -> Log.i("AddTaskAmplify", "You chose BLUE team!"),
+                        error -> Log.e("Amplify", error.toString()));
+
+                System.out.println("Blue team was chosen");
+            }
+        });
+        RadioButton button3 = AddTask.this.findViewById(R.id.radioButton3);
+        button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Team teams;
+                teams = Team.builder()
+                        .name("Green")
+                        .build();
+
+                Amplify.API.mutate(
+                        ModelMutation.create(teams),
+                        response -> Log.i("AddTaskAmplify", "You chose GREEN team!"),
+                        error -> Log.e("Amplify", error.toString()));
+
+                System.out.println("Green team was chosen");
+            }
+        });
     }
 }

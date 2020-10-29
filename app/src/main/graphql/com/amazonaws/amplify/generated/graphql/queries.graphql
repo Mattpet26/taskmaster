@@ -5,6 +5,16 @@ query GetTaskItem($id: ID!) {
     name
     description
     state
+    foundAt {
+      id
+      name
+      address
+      taskItems {
+        nextToken
+      }
+      createdAt
+      updatedAt
+    }
     createdAt
     updatedAt
   }
@@ -20,6 +30,52 @@ query ListTaskItems(
       name
       description
       state
+      foundAt {
+        id
+        name
+        address
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+    nextToken
+  }
+}
+query GetTeam($id: ID!) {
+  getTeam(id: $id) {
+    id
+    name
+    address
+    taskItems {
+      items {
+        id
+        name
+        description
+        state
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+    createdAt
+    updatedAt
+  }
+}
+query ListTeams(
+  $filter: ModelTeamFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listTeams(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      name
+      address
+      taskItems {
+        nextToken
+      }
       createdAt
       updatedAt
     }
