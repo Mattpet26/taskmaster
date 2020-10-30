@@ -1,14 +1,12 @@
 # TaskMaster change log (I will delete it every other day, just to keep track of what I did the previous day)
 
-* 10/27/2020
-* Modified add task form to save the data entered in as a task to DynamoDB
-* Refactored homepage's recyclerView to display all task entities in DynamoDB
-* Added amplify to app
-
-* 10/28/2020
+* 10/29/2020
 * Added Teams to taskmaster
 * Added radio-buttons to addTask page
 * Added buttons for each team in settings
+* Users can create a task for a team, that task is saved to dynamoDB
+* Users can sign in with a team in the settings to only see that teams tasks
+* Tasks are only displayed in the recyclerView by team.
 
 ## How to run the app
 * Clone the repository from the github

@@ -326,18 +326,6 @@
                         "deprecationReason": null
                     },
                     {
-                        "name": "address",
-                        "description": null,
-                        "args": [],
-                        "type": {
-                            "kind": "SCALAR",
-                            "name": "String",
-                            "ofType": null
-                        },
-                        "isDeprecated": false,
-                        "deprecationReason": null
-                    },
-                    {
                         "name": "taskItems",
                         "description": null,
                         "args": [
@@ -1082,16 +1070,6 @@
                         "defaultValue": null
                     },
                     {
-                        "name": "address",
-                        "description": null,
-                        "type": {
-                            "kind": "INPUT_OBJECT",
-                            "name": "ModelStringInput",
-                            "ofType": null
-                        },
-                        "defaultValue": null
-                    },
-                    {
                         "name": "and",
                         "description": null,
                         "type": {
@@ -1661,16 +1639,6 @@
                             "ofType": null
                         },
                         "defaultValue": null
-                    },
-                    {
-                        "name": "address",
-                        "description": null,
-                        "type": {
-                            "kind": "SCALAR",
-                            "name": "String",
-                            "ofType": null
-                        },
-                        "defaultValue": null
                     }
                 ],
                 "interfaces": null,
@@ -1685,16 +1653,6 @@
                 "inputFields": [
                     {
                         "name": "name",
-                        "description": null,
-                        "type": {
-                            "kind": "INPUT_OBJECT",
-                            "name": "ModelStringInput",
-                            "ofType": null
-                        },
-                        "defaultValue": null
-                    },
-                    {
-                        "name": "address",
                         "description": null,
                         "type": {
                             "kind": "INPUT_OBJECT",
@@ -1768,16 +1726,6 @@
                     },
                     {
                         "name": "name",
-                        "description": null,
-                        "type": {
-                            "kind": "SCALAR",
-                            "name": "String",
-                            "ofType": null
-                        },
-                        "defaultValue": null
-                    },
-                    {
-                        "name": "address",
                         "description": null,
                         "type": {
                             "kind": "SCALAR",

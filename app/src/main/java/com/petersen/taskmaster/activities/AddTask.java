@@ -7,14 +7,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.amplifyframework.api.graphql.model.ModelMutation;
+import com.amplifyframework.api.graphql.model.ModelQuery;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.TaskItem;
 import com.amplifyframework.datastore.generated.model.Team;
@@ -22,24 +24,28 @@ import com.petersen.taskmaster.R;
 
 import java.util.ArrayList;
 
+
 public class AddTask extends AppCompatActivity {
 
-//    Database db;
     ArrayList<Team> teams;
     private RadioGroup radioTeamGroup;
-    private RadioButton radioTeamButton;
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent = new Intent(AddTask.this, MainActivity.class);
-        AddTask.this.startActivity(intent);
-        return true;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
+
+        teams = new ArrayList<>();
+        Amplify.API.query(
+                ModelQuery.list(Team.class),
+                response -> {
+                    for (Team team : response.getData()) {
+                        teams.add(team);
+                    }
+                    Log.i("Amplify.queryitems", "TeamAdded");
+                },
+                error -> Log.e("Amplify.queryitems", "Didn't get a team!")
+        );
 
 //================================================= Add-Task ======================================================================================
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -56,91 +62,52 @@ public class AddTask extends AppCompatActivity {
                 String description = itemDescriptionInput.getText().toString();
                 String state = itemState.getText().toString();
 
-                int selectedId = radioTeamGroup.getCheckedRadioButtonId();
-                if (selectedId == -1) {
-                    Toast.makeText(AddTask.this,
-                            "No answer has been selected",
-                            Toast.LENGTH_SHORT)
-                            .show();
-                }
-                else {
-                    RadioButton radioButton
-                            = (RadioButton)radioTeamGroup
-                            .findViewById(selectedId);
+                RadioGroup teamRadGroup = AddTask.this.findViewById(R.id.radioGroup);
+                RadioButton selectedTeam = AddTask.this.findViewById(teamRadGroup.getCheckedRadioButtonId());
+
+                String teamName = selectedTeam.getText().toString();
+                System.out.println(teamName);
+                Team teamSelected = null;
+                for (int i = 0; i < teams.size(); i++) {
+                    if (teams.get(i).getName().equals(teamName)) {
+                        teamSelected = teams.get(i);
+                    }
                 }
 //================================================= Amplify Add-Task =======================================================================================
 
-                    TaskItem taskClass;
-                    taskClass = TaskItem.builder()
-                            .name(taskName)
-                            .description(description)
-                            .state(state)
-                            .foundAt(radioTeamGroup.getId(selectedId))
-                            .build();
+                TaskItem taskClass;
+                taskClass = TaskItem.builder()
+                        .name(taskName)
+                        .description(description)
+                        .state(state)
+                        .foundAt(teamSelected)
+                        .build();
 
-                    Amplify.API.mutate(
-                            ModelMutation.create(taskClass),
-                            response -> Log.i("AddTaskAmplify", "Your task was saved, you saved ---- " + taskName + " ----"),
-                            error -> Log.e("Amplify", error.toString()));
-//                    db.taskItemDao().save(taskClass);
+                Amplify.API.mutate(
+                        ModelMutation.create(taskClass),
+                        response -> Log.i("AddTaskAmplify", "Your task was saved, you saved ---- " + taskName + " ----"),
+                        error -> Log.e("Amplify", error.toString()));
 
                 System.out.println(String.format("task title is %s , description is %s", taskName, description));
                 TextView showSubmit = AddTask.this.findViewById(R.id.show_submit);
                 showSubmit.setVisibility(View.VISIBLE);
             }
         });
+    }
+
 //========================================================== Radio Buttons ========================================================================================
 
-        RadioButton button1 = AddTask.this.findViewById(R.id.radioButton1);
-        button1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Team teams;
-                teams = Team.builder()
-                        .name("Red")
-                        .build();
 
-                Amplify.API.mutate(
-                        ModelMutation.create(teams),
-                        response -> Log.i("AddTaskAmplify", "You chose RED team!"),
-                        error -> Log.e("Amplify", error.toString()));
-
-                System.out.println("Red team was chosen");
-            }
-        });
-        RadioButton button2 = AddTask.this.findViewById(R.id.radioButton2);
-        button2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Team teams;
-                teams = Team.builder()
-                        .name("Blue")
-                        .build();
-
-                Amplify.API.mutate(
-                        ModelMutation.create(teams),
-                        response -> Log.i("AddTaskAmplify", "You chose BLUE team!"),
-                        error -> Log.e("Amplify", error.toString()));
-
-                System.out.println("Blue team was chosen");
-            }
-        });
-        RadioButton button3 = AddTask.this.findViewById(R.id.radioButton3);
-        button3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Team teams;
-                teams = Team.builder()
-                        .name("Green")
-                        .build();
-
-                Amplify.API.mutate(
-                        ModelMutation.create(teams),
-                        response -> Log.i("AddTaskAmplify", "You chose GREEN team!"),
-                        error -> Log.e("Amplify", error.toString()));
-
-                System.out.println("Green team was chosen");
-            }
-        });
+//=============================================== options =======================================================================================================
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent = new Intent(AddTask.this, MainActivity.class);
+        AddTask.this.startActivity(intent);
+        return true;
     }
+//    public void onRadioButtonClicked(View view) {
+//        RadioButton radioButton = (RadioButton) view;
+//        team = radioButton.getText().toString();
+//    }
+
 }

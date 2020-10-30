@@ -5,12 +5,9 @@ type TaskItem @model {
   state: String
   foundAt: Team @connection(name: "teamItems")
 }
-#amplify push to get store file
-#remove the @Nonnull + @Primarykey from taskitem
-#remove the database (comment out)
+
 type Team @model {
   id: ID!
   name: String
-  address: String
   taskItems: [TaskItem] @connection(name: "teamItems")
 }
