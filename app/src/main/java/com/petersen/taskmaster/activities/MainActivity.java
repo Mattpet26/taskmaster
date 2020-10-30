@@ -17,7 +17,9 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.amplifyframework.AmplifyException;
@@ -35,6 +37,7 @@ import com.petersen.taskmaster.R;
 import com.petersen.taskmaster.TaskDetail;
 import com.petersen.taskmaster.ViewAdapter;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInteractWithTaskListener {
@@ -45,29 +48,22 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
     ArrayList<Team> teams;
     Handler handler;
     Handler handleSingleItem;
-    int storeWeAreOnIndex = 0;
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        SharedPreferences preference = PreferenceManager.getDefaultSharedPreferences(this);
-        TextView userTask = findViewById(R.id.user_task_list);
-        userTask.setText(preference.getString("username", "My Tasks"));
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        tasks = new ArrayList<>();
 
+//============================================================================ Handlers ==================================================================
         handler = new Handler(Looper.getMainLooper(),
                 new Handler.Callback() {
                     @Override
                     public boolean handleMessage(@NonNull Message msg) {
                         connectAdapterToRecycler();
                         recyclerView.getAdapter().notifyDataSetChanged();
-                        return true;
+                        return false;
                     }
                 });
 
@@ -75,13 +71,34 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
                 new Handler.Callback() {
                     @Override
                     public boolean handleMessage(@NonNull Message msg) {
+                        System.out.println("Test " + tasks);
                         recyclerView.getAdapter().notifyItemInserted(tasks.size() - 1);
-                        return true;
+                        return false;
                     }
                 });
 
-        configureAws(handler);
-//        configureDB();
+//============================================================================ onCreate continued ==================================================================
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        String team = preferences.getString("team", null);
+        configureAws();
+
+        Amplify.API.query(
+                ModelQuery.list(TaskItem.class),
+                response -> {
+                    for(TaskItem task : response.getData()) {
+                        if(preferences.contains("team")) {
+                            if (task.foundAt.getName().equals(preferences.getString("team", null))) {
+                                tasks.add(task);
+                            }
+                        }else {
+                            tasks.add(task);
+                        }
+                    }
+                    handler.sendEmptyMessage(1);
+                },
+                error -> Log.e("Amplify", "Failed to retrieve store")
+        );
 
         String SUBSCRIBETAG = "Amplify.subscription";
         ApiOperation subscription = Amplify.API.subscribe(
@@ -91,17 +108,18 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
                     Log.i(SUBSCRIBETAG, "Subscription created: " + ((TaskItem) createdItem.getData()).getName()
                     );
                     TaskItem newItem = (TaskItem) createdItem.getData();
-                    tasks.add(newItem);
-                    handleSingleItem.sendEmptyMessage(1);
+                    if (newItem.getFoundAt().getName().equals(preferences.getString("team", null))) {
+                        tasks.add(newItem);
+                        handleSingleItem.sendEmptyMessage(1);
+                    }
                 },
                 onFailure -> {
-                    Log.i(SUBSCRIBETAG, "Subscription failed");
+                    Log.i(SUBSCRIBETAG, onFailure.toString());
                 },
                 () -> Log.i(SUBSCRIBETAG, "Subscription completed")
         );
 
 //============================================================== Direct All-Tasks =======================================================================================
-
         Button all_tasks = MainActivity.this.findViewById(R.id.all_tasks);
         all_tasks.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,8 +130,7 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
         });
 
 //================================================================== Direct Settings =======================================================================================
-
-        final Button goToSettingsButton = MainActivity.this.findViewById(R.id.setting_button);
+        Button goToSettingsButton = MainActivity.this.findViewById(R.id.setting_button);
         goToSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,7 +140,6 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
         });
 
 //================================================================ take user to add task =======================================================================================
-
         Button add_task = MainActivity.this.findViewById(R.id.add_task);
         add_task.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
     }
 
 //==================================================================== task listener ================================================================================================
-
     @Override
     public void taskListener(TaskItem taskClass) {
         Intent intent = new Intent(MainActivity.this, TaskDetail.class);
@@ -144,71 +159,71 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
         intent.putExtra("state", taskClass.state);
         this.startActivity(intent);
     }
+
 //============================================================================ Stores =================================================================================================
 
-    public void storeCreation() {
-        Team team1 = Team.builder()
-                .address("123 sus road")
-                .name("Red")
-                .build();
-        Team team2 = Team.builder()
-                .address("111 Eleven Rd. drive")
-                .name("Blue")
-                .build();
-        Team team3 = Team.builder()
-                .address("42 Wallaby Way, Sydney, Australia")
-                .name("Green")
-                .build();
-
-        Amplify.API.mutate(ModelMutation.create(team1),
-                response -> Log.i("Amplify", "Added a store"),
-                error -> Log.e("Amplify", "Failed to add a store")
-        );
-
-        Amplify.API.mutate(ModelMutation.create(team2),
-                response -> Log.i("Amplify", "Added a store"),
-                error -> Log.e("Amplify", "Failed to add a store")
-        );
-
-        Amplify.API.mutate(ModelMutation.create(team3),
-                response -> Log.i("Amplify", "Added a store"),
-                error -> Log.e("Amplify", "Failed to add a store")
-        );
-    }
+//    public void storeCreation() {
+//        Team team1 = Team.builder()
+//                .name("Red")
+//                .build();
+//        Team team2 = Team.builder()
+//                .name("Blue")
+//                .build();
+//        Team team3 = Team.builder()
+//                .name("Green")
+//                .build();
+//
+//        Amplify.API.mutate(ModelMutation.create(team1),
+//                response -> Log.i("Amplify", "Added a store"),
+//                error -> Log.e("Amplify", "Failed to add a store")
+//        );
+//
+//        Amplify.API.mutate(ModelMutation.create(team2),
+//                response -> Log.i("Amplify", "Added a store"),
+//                error -> Log.e("Amplify", "Failed to add a store")
+//        );
+//
+//        Amplify.API.mutate(ModelMutation.create(team3),
+//                response -> Log.i("Amplify", "Added a store"),
+//                error -> Log.e("Amplify", "Failed to add a store")
+//        );
+//    }
 
 //============================================================================= Methods ================================================================================================
 
 //======================================================== Recycler
     private void connectAdapterToRecycler() {
-        tasks = new ArrayList<TaskItem>();
+//        tasks = new ArrayList<TaskItem>();
         recyclerView = findViewById(R.id.recycler_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        for(TaskItem item : teams.get(storeWeAreOnIndex).getTaskItems()){
-//            tasks.add(item);
-//        }
         recyclerView.setAdapter(new ViewAdapter(tasks, this));
     }
 
 //======================================================== Amplify
-    private void configureAws(Handler handler){
+    private void configureAws(){
         try {
             Amplify.addPlugin(new AWSApiPlugin());
             Amplify.configure(getApplicationContext());
-
-            Amplify.API.query(
-                    ModelQuery.list(Team.class),
-                    response -> {
-//                                for(Team team : response.getData()) {
-//                                    teams.add(team);
-//                                }
-                        handler.sendEmptyMessage(1);
-                    },
-                    error -> Log.e("Amplify", "Failed to retrieve store")
-                    );
         } catch (AmplifyException error) {
             Log.e("MyAmplifyApp", "Could not initialize Amplify", error);
         }
     }
+
+//====================================================== Team
+//    public void retrieveTeamFromAws(Handler handler){
+
+//        Amplify.API.query(
+//                ModelQuery.list(TaskItem.class),
+//                response -> {
+//                    for(TaskItem team : response.getData()) {
+//                        if(team.getFoundAt().getName().equals(preferences.getString("team", null)))
+//                            tasks.add(team);
+//                        }
+//                    handler.sendEmptyMessage(1);
+//                },
+//                error -> Log.e("Amplify", "Failed to retrieve store")
+//        );
+//    }
 
 //========================================================= Database
 //    private void configureDB(){
@@ -217,4 +232,16 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
 //                .allowMainThreadQueries()
 //                .build();
 //    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        SharedPreferences preference = PreferenceManager.getDefaultSharedPreferences(this);
+        TextView userTask = findViewById(R.id.user_task_list);
+        userTask.setText(preference.getString("username", "My Tasks"));
+
+        RecyclerView recyclerView = findViewById(R.id.recycler_list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new ViewAdapter(tasks, this));
+    }
+
 }

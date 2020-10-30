@@ -11,7 +11,6 @@ mutation CreateTaskItem(
     foundAt {
       id
       name
-      address
       taskItems {
         nextToken
       }
@@ -34,7 +33,6 @@ mutation UpdateTaskItem(
     foundAt {
       id
       name
-      address
       taskItems {
         nextToken
       }
@@ -57,7 +55,6 @@ mutation DeleteTaskItem(
     foundAt {
       id
       name
-      address
       taskItems {
         nextToken
       }
@@ -75,7 +72,6 @@ mutation CreateTeam(
   createTeam(input: $input, condition: $condition) {
     id
     name
-    address
     taskItems {
       items {
         id
@@ -98,7 +94,6 @@ mutation UpdateTeam(
   updateTeam(input: $input, condition: $condition) {
     id
     name
-    address
     taskItems {
       items {
         id
@@ -121,7 +116,6 @@ mutation DeleteTeam(
   deleteTeam(input: $input, condition: $condition) {
     id
     name
-    address
     taskItems {
       items {
         id

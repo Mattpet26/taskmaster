@@ -22,11 +22,9 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 public final class Team implements Model {
   public static final QueryField ID = field("id");
   public static final QueryField NAME = field("name");
-  public static final QueryField ADDRESS = field("address");
-  private final @ModelField(targetType="ID", isRequired = true) String id;
-  private final @ModelField(targetType="String") String name;
-  private final @ModelField(targetType="String") String address;
-  private final @ModelField(targetType="TaskItem") @HasMany(associatedWith = "foundAt", type = TaskItem.class) List<TaskItem> taskItems = null;
+    public final @ModelField(targetType="ID", isRequired = true) String id;
+    public final @ModelField(targetType="String") String name;
+    public final @ModelField(targetType="TaskItem") @HasMany(associatedWith = "foundAt", type = TaskItem.class) List<TaskItem> taskItems = null;
   public String getId() {
       return id;
   }
@@ -35,18 +33,13 @@ public final class Team implements Model {
       return name;
   }
   
-  public String getAddress() {
-      return address;
-  }
-  
   public List<TaskItem> getTaskItems() {
       return taskItems;
   }
   
-  private Team(String id, String name, String address) {
+  public Team(String id, String name) {
     this.id = id;
     this.name = name;
-    this.address = address;
   }
   
   @Override
@@ -58,8 +51,7 @@ public final class Team implements Model {
       } else {
       Team team = (Team) obj;
       return ObjectsCompat.equals(getId(), team.getId()) &&
-              ObjectsCompat.equals(getName(), team.getName()) &&
-              ObjectsCompat.equals(getAddress(), team.getAddress());
+              ObjectsCompat.equals(getName(), team.getName());
       }
   }
   
@@ -68,7 +60,6 @@ public final class Team implements Model {
     return new StringBuilder()
       .append(getId())
       .append(getName())
-      .append(getAddress())
       .toString()
       .hashCode();
   }
@@ -78,8 +69,7 @@ public final class Team implements Model {
     return new StringBuilder()
       .append("Team {")
       .append("id=" + String.valueOf(getId()) + ", ")
-      .append("name=" + String.valueOf(getName()) + ", ")
-      .append("address=" + String.valueOf(getAddress()))
+      .append("name=" + String.valueOf(getName()))
       .append("}")
       .toString();
   }
@@ -109,47 +99,36 @@ public final class Team implements Model {
     }
     return new Team(
       id,
-      null,
       null
     );
   }
   
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
-      name,
-      address);
+      name);
   }
   public interface BuildStep {
     Team build();
     BuildStep id(String id) throws IllegalArgumentException;
     BuildStep name(String name);
-    BuildStep address(String address);
   }
   
 
   public static class Builder implements BuildStep {
     private String id;
     private String name;
-    private String address;
     @Override
      public Team build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
         
         return new Team(
           id,
-          name,
-          address);
+          name);
     }
     
     @Override
      public BuildStep name(String name) {
         this.name = name;
-        return this;
-    }
-    
-    @Override
-     public BuildStep address(String address) {
-        this.address = address;
         return this;
     }
     
@@ -176,20 +155,14 @@ public final class Team implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, String name, String address) {
+    private CopyOfBuilder(String id, String name) {
       super.id(id);
-      super.name(name)
-        .address(address);
+      super.name(name);
     }
     
     @Override
      public CopyOfBuilder name(String name) {
       return (CopyOfBuilder) super.name(name);
-    }
-    
-    @Override
-     public CopyOfBuilder address(String address) {
-      return (CopyOfBuilder) super.address(address);
     }
   }
   

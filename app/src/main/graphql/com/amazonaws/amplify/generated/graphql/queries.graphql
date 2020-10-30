@@ -8,7 +8,6 @@ query GetTaskItem($id: ID!) {
     foundAt {
       id
       name
-      address
       taskItems {
         nextToken
       }
@@ -33,7 +32,6 @@ query ListTaskItems(
       foundAt {
         id
         name
-        address
         createdAt
         updatedAt
       }
@@ -47,7 +45,6 @@ query GetTeam($id: ID!) {
   getTeam(id: $id) {
     id
     name
-    address
     taskItems {
       items {
         id
@@ -72,7 +69,6 @@ query ListTeams(
     items {
       id
       name
-      address
       taskItems {
         nextToken
       }

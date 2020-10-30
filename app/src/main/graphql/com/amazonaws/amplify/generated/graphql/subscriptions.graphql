@@ -8,7 +8,6 @@ subscription OnCreateTaskItem {
     foundAt {
       id
       name
-      address
       taskItems {
         nextToken
       }
@@ -28,7 +27,6 @@ subscription OnUpdateTaskItem {
     foundAt {
       id
       name
-      address
       taskItems {
         nextToken
       }
@@ -48,7 +46,6 @@ subscription OnDeleteTaskItem {
     foundAt {
       id
       name
-      address
       taskItems {
         nextToken
       }
@@ -63,7 +60,6 @@ subscription OnCreateTeam {
   onCreateTeam {
     id
     name
-    address
     taskItems {
       items {
         id
@@ -83,7 +79,6 @@ subscription OnUpdateTeam {
   onUpdateTeam {
     id
     name
-    address
     taskItems {
       items {
         id
@@ -103,7 +98,6 @@ subscription OnDeleteTeam {
   onDeleteTeam {
     id
     name
-    address
     taskItems {
       items {
         id

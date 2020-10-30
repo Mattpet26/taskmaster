@@ -6,10 +6,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.Objects;
 
-import androidx.annotation.NonNull;
 import androidx.core.util.ObjectsCompat;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 
 import com.amplifyframework.core.model.Model;
 import com.amplifyframework.core.model.annotations.Index;
@@ -21,7 +18,6 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 
 /** This is an auto generated class representing the TaskItem type in your schema. */
 @SuppressWarnings("all")
-@Entity
 @ModelConfig(pluralName = "TaskItems")
 public final class TaskItem implements Model {
   public static final QueryField ID = field("id");
@@ -29,12 +25,11 @@ public final class TaskItem implements Model {
   public static final QueryField DESCRIPTION = field("description");
   public static final QueryField STATE = field("state");
   public static final QueryField FOUND_AT = field("taskItemFoundAtId");
-
-  public final @ModelField(targetType="ID", isRequired = true) String id;
-  public final @ModelField(targetType="String", isRequired = true) String name;
-  public final @ModelField(targetType="String") String description;
-  public final @ModelField(targetType="String") String state;
-  public final @ModelField(targetType="Team") @BelongsTo(targetName = "taskItemFoundAtId", type = Team.class) Team foundAt;
+    public final @ModelField(targetType="ID", isRequired = true) String id;
+    public final @ModelField(targetType="String", isRequired = true) String name;
+    public final @ModelField(targetType="String") String description;
+    public final @ModelField(targetType="String") String state;
+    public final @ModelField(targetType="Team") @BelongsTo(targetName = "taskItemFoundAtId", type = Team.class) Team foundAt;
   public String getId() {
       return id;
   }

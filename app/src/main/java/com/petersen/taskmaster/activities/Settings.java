@@ -10,16 +10,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.petersen.taskmaster.R;
 
 public class Settings extends AppCompatActivity {
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent = new Intent(Settings.this, MainActivity.class);
-        Settings.this.startActivity(intent);
-        return true;
-    }
+    String team;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,7 +26,7 @@ public class Settings extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        final SharedPreferences.Editor preferenceEditor = preferences.edit();
+        SharedPreferences.Editor preferenceEditor = preferences.edit();
 
         Button login_button = Settings.this.findViewById(R.id.login_button);
         login_button.setOnClickListener(new View.OnClickListener() {
@@ -36,27 +34,30 @@ public class Settings extends AppCompatActivity {
             public void onClick(View v) {
                 EditText username = findViewById(R.id.editUsernameText);
                 System.out.println(username.getText().toString());
+
+                RadioGroup radioGroup = Settings.this.findViewById(R.id.radioGroup);
+                RadioButton radioButton = Settings.this.findViewById(radioGroup.getCheckedRadioButtonId());
+                String team = radioButton.getText().toString();
+
+
                 preferenceEditor.putString("username", username.getText().toString() + "'s task(s):");
+                preferenceEditor.putString("team", team);
                 preferenceEditor.apply();
 
                 Intent goHome = new Intent(Settings.this, MainActivity.class);
                 Settings.this.startActivity(goHome);
+                finish();
             }
         });
-        Button store1 = Settings.this.findViewById(R.id.store1);
-        store1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                if(storeWeAreOnIndex > 0){
-//                storeWeAreOnIndex --;
-//                tasks.clear();
-//                for(TaskItem item : stores.get(storeWeAreOnIndex).getCheapItems()){
-//                tasks.add(item);
-//                recyclerView.getAdapter().notifyDataSetChanged();
-
-                Intent goHome = new Intent(Settings.this, MainActivity.class);
-                Settings.this.startActivity(goHome);
-            }
-        });
+    }
+    public void onRadioButtonClicked(View view) {
+         RadioButton radioButton = (RadioButton) view;
+         team = radioButton.getText().toString();
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent = new Intent(Settings.this, MainActivity.class);
+        Settings.this.startActivity(intent);
+        return true;
     }
 }
