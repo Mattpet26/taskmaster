@@ -17,37 +17,35 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
+import android.widget.EditText;
 import android.widget.TextView;
-
 import com.amplifyframework.AmplifyException;
 import com.amplifyframework.api.ApiOperation;
 import com.amplifyframework.api.aws.AWSApiPlugin;
-import com.amplifyframework.api.graphql.model.ModelMutation;
 import com.amplifyframework.api.graphql.model.ModelQuery;
 import com.amplifyframework.api.graphql.model.ModelSubscription;
+import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;
+import com.amplifyframework.auth.options.AuthSignOutOptions;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.TaskItem;
 import com.amplifyframework.datastore.generated.model.Team;
 import com.petersen.taskmaster.AllTasks;
-//import com.petersen.taskmaster.database.Database;
 import com.petersen.taskmaster.R;
+import com.petersen.taskmaster.Signin;
+import com.petersen.taskmaster.Signup;
 import com.petersen.taskmaster.TaskDetail;
 import com.petersen.taskmaster.ViewAdapter;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInteractWithTaskListener {
 
-//    Database db;
     ArrayList<TaskItem> tasks;
     RecyclerView recyclerView;
     ArrayList<Team> teams;
     Handler handler;
     Handler handleSingleItem;
+    Handler handlecheckLoggedIn;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -77,21 +75,39 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
                     }
                 });
 
-//============================================================================ onCreate continued ==================================================================
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        handlecheckLoggedIn = new Handler(Looper.getMainLooper(), message -> {
+            if (message.arg1 == 0) {
+                Log.i("Amplify.login", "They weren't logged in");
+                Button logout = MainActivity.this.findViewById(R.id.logout_button);
+                logout.setVisibility(View.INVISIBLE);
+            } else if (message.arg1 == 1) {
+                Log.i("Amplify.login", Amplify.Auth.getCurrentUser().getUsername());
+                TextView loggedUser = MainActivity.this.findViewById(R.id.user_loggedin);
+                loggedUser.setText(Amplify.Auth.getCurrentUser().getUsername());
+                loggedUser.setVisibility(View.VISIBLE);
+            } else {
+                Log.i("Amplify.login", "Send true or false pls");
+            }
+            return false;
+        });
 
-        String team = preferences.getString("team", null);
+//============================================================================ onCreate continued ==================================================================
         configureAws();
+        getIsSignedIn();
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String team = preferences.getString("team", null);
 
         Amplify.API.query(
                 ModelQuery.list(TaskItem.class),
                 response -> {
-                    for(TaskItem task : response.getData()) {
-                        if(preferences.contains("team")) {
-                            if (task.foundAt.getName().equals(preferences.getString("team", null))) {
+                    for (TaskItem task : response.getData()) {
+                        System.out.println(task);
+                        if (preferences.contains("team")) {
+                            if (task.getFoundAt().getName().equals(preferences.getString("team", null))) {
                                 tasks.add(task);
                             }
-                        }else {
+                        } else {
                             tasks.add(task);
                         }
                     }
@@ -140,12 +156,55 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
         });
 
 //================================================================ take user to add task =======================================================================================
-        Button add_task = MainActivity.this.findViewById(R.id.add_task);
-        add_task.setOnClickListener(new View.OnClickListener() {
+        Button goToAddTask = MainActivity.this.findViewById(R.id.add_task);
+        goToAddTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent goToAddTask = new Intent(MainActivity.this, AddTask.class);
                 MainActivity.this.startActivity(goToAddTask);
+            }
+        });
+
+//============================================================== Direct Login =======================================================================================
+        Button signUp = MainActivity.this.findViewById(R.id.sign_up_button);
+        signUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent goToAddTask = new Intent(MainActivity.this, Signup.class);
+                MainActivity.this.startActivity(goToAddTask);
+            }
+        });
+
+//============================================================== Direct SignIn =======================================================================================
+        Button login = MainActivity.this.findViewById(R.id.sign_in_button);
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent goToAddTask = new Intent(MainActivity.this, Signin.class);
+                MainActivity.this.startActivity(goToAddTask);
+            }
+        });
+
+//============================================================== Direct logout =======================================================================================
+        Button logout = MainActivity.this.findViewById(R.id.logout_button);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent logoutButton = new Intent(MainActivity.this, Signin.class);
+                MainActivity.this.startActivity(logoutButton);
+
+                TextView loggedUser = MainActivity.this.findViewById(R.id.user_loggedin);
+                loggedUser.setText(Amplify.Auth.getCurrentUser().getUsername());
+                loggedUser.setVisibility(View.INVISIBLE);
+
+                Button logout = MainActivity.this.findViewById(R.id.logout_button);
+                logout.setVisibility(View.INVISIBLE);
+
+                Amplify.Auth.signOut(
+                        AuthSignOutOptions.builder().globalSignOut(true).build(),
+                        () -> Log.i("AuthQuickstart", "Signed out globally"),
+                        error -> Log.e("AuthQuickstart", error.toString())
+                );
             }
         });
     }
@@ -193,7 +252,6 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
 
 //======================================================== Recycler
     private void connectAdapterToRecycler() {
-//        tasks = new ArrayList<TaskItem>();
         recyclerView = findViewById(R.id.recycler_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(new ViewAdapter(tasks, this));
@@ -203,35 +261,36 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
     private void configureAws(){
         try {
             Amplify.addPlugin(new AWSApiPlugin());
+            Amplify.addPlugin(new AWSCognitoAuthPlugin());
             Amplify.configure(getApplicationContext());
         } catch (AmplifyException error) {
             Log.e("MyAmplifyApp", "Could not initialize Amplify", error);
         }
     }
 
-//====================================================== Team
-//    public void retrieveTeamFromAws(Handler handler){
+//====================================================== user signed-in
+    public boolean getIsSignedIn() {
+        boolean[] isSingedIn = {false};
 
-//        Amplify.API.query(
-//                ModelQuery.list(TaskItem.class),
-//                response -> {
-//                    for(TaskItem team : response.getData()) {
-//                        if(team.getFoundAt().getName().equals(preferences.getString("team", null)))
-//                            tasks.add(team);
-//                        }
-//                    handler.sendEmptyMessage(1);
-//                },
-//                error -> Log.e("Amplify", "Failed to retrieve store")
-//        );
-//    }
+        Amplify.Auth.fetchAuthSession(
+                result -> {
+                    Log.i("Amplify.login", result.toString());
+                    Message message = new Message();
+                    if(result.isSignedIn()){
+                        message.arg1 = 1;
+                        handlecheckLoggedIn.sendMessage(message);
+                    }else{
+                        message.arg1 = 0;
+                        handlecheckLoggedIn.sendMessage(message);
+                    }
+                },
+                error -> Log.e("Amplify.login", error.toString())
+        );
+        return isSingedIn[0];
+    }
 
-//========================================================= Database
-//    private void configureDB(){
-//        db = Room.databaseBuilder(getApplicationContext(), Database.class, "matthew_task_database")
-//                .fallbackToDestructiveMigration()
-//                .allowMainThreadQueries()
-//                .build();
-//    }
+//============================================================================ On Resume =================================================================================================
+
     @Override
     public void onResume() {
         super.onResume();
@@ -243,5 +302,4 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(new ViewAdapter(tasks, this));
     }
-
 }

@@ -73,8 +73,8 @@ public class AddTask extends AppCompatActivity {
                         teamSelected = teams.get(i);
                     }
                 }
-//================================================= Amplify Add-Task =======================================================================================
 
+//================================================= Amplify Add-Task =======================================================================================
                 TaskItem taskClass;
                 taskClass = TaskItem.builder()
                         .name(taskName)
@@ -95,9 +95,6 @@ public class AddTask extends AppCompatActivity {
         });
     }
 
-//========================================================== Radio Buttons ========================================================================================
-
-
 //=============================================== options =======================================================================================================
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -105,9 +102,4 @@ public class AddTask extends AppCompatActivity {
         AddTask.this.startActivity(intent);
         return true;
     }
-//    public void onRadioButtonClicked(View view) {
-//        RadioButton radioButton = (RadioButton) view;
-//        team = radioButton.getText().toString();
-//    }
-
 }
