@@ -4,10 +4,17 @@ type TaskItem @model {
   description: String
   state: String
   foundAt: Team @connection(name: "teamItems")
+  file: NewFile @connection(name: "fileToAdd")
 }
 
 type Team @model {
   id: ID!
   name: String
   taskItems: [TaskItem] @connection(name: "teamItems")
+}
+
+type NewFile @model{
+  id: ID!
+  name: String
+  belongsTo: TaskItem! @connection(name: "fileToAdd")
 }

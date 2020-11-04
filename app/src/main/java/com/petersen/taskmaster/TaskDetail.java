@@ -1,15 +1,32 @@
 package com.petersen.taskmaster;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.FileUtils;
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.amplifyframework.core.Amplify;
 import com.petersen.taskmaster.activities.MainActivity;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+
+
 public class TaskDetail extends AppCompatActivity {
+
+    String lastFileUploaded;
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent = new Intent(TaskDetail.this, MainActivity.class);
@@ -22,6 +39,8 @@ public class TaskDetail extends AppCompatActivity {
         setContentView(R.layout.activity_task_detail);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        downloadFile(lastFileUploaded);
+
         Intent intent = getIntent();
         System.out.println(intent.getExtras().getString("taskName"));
 
@@ -33,5 +52,18 @@ public class TaskDetail extends AppCompatActivity {
 
         TextView taskState = TaskDetail.this.findViewById(R.id.task_state);
         taskState.setText(intent.getExtras().getString("state"));
+    }
+    //========================================================== S3 ===================================================================================================
+    private void downloadFile(String fileKey) {
+        Amplify.Storage.downloadFile(
+                fileKey,
+                new File(getApplicationContext().getFilesDir() + "/" + fileKey + ".txt"),
+                result -> {
+                    Log.i("Amplify.s3down", "Successfully downloaded: " + result.getFile().getName());
+                    ImageView image = findViewById(R.id.imageView);
+                    image.setImageBitmap(BitmapFactory.decodeFile(result.getFile().getPath()));
+                },
+                error -> Log.e("Amplify.s3down", "Download Failure", error)
+        );
     }
 }
