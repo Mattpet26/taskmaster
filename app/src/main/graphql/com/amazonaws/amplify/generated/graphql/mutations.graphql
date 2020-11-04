@@ -17,20 +17,7 @@ mutation CreateTaskItem(
       createdAt
       updatedAt
     }
-    file {
-      id
-      name
-      belongsTo {
-        id
-        name
-        description
-        state
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
+    file
     createdAt
     updatedAt
   }
@@ -53,20 +40,7 @@ mutation UpdateTaskItem(
       createdAt
       updatedAt
     }
-    file {
-      id
-      name
-      belongsTo {
-        id
-        name
-        description
-        state
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
+    file
     createdAt
     updatedAt
   }
@@ -89,20 +63,7 @@ mutation DeleteTaskItem(
       createdAt
       updatedAt
     }
-    file {
-      id
-      name
-      belongsTo {
-        id
-        name
-        description
-        state
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
+    file
     createdAt
     updatedAt
   }
@@ -120,6 +81,7 @@ mutation CreateTeam(
         name
         description
         state
+        file
         createdAt
         updatedAt
       }
@@ -142,6 +104,7 @@ mutation UpdateTeam(
         name
         description
         state
+        file
         createdAt
         updatedAt
       }
@@ -164,103 +127,11 @@ mutation DeleteTeam(
         name
         description
         state
+        file
         createdAt
         updatedAt
       }
       nextToken
-    }
-    createdAt
-    updatedAt
-  }
-}
-mutation CreateNewFile(
-  $input: CreateNewFileInput!
-  $condition: ModelNewFileConditionInput
-) {
-  createNewFile(input: $input, condition: $condition) {
-    id
-    name
-    belongsTo {
-      id
-      name
-      description
-      state
-      foundAt {
-        id
-        name
-        createdAt
-        updatedAt
-      }
-      file {
-        id
-        name
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-    createdAt
-    updatedAt
-  }
-}
-mutation UpdateNewFile(
-  $input: UpdateNewFileInput!
-  $condition: ModelNewFileConditionInput
-) {
-  updateNewFile(input: $input, condition: $condition) {
-    id
-    name
-    belongsTo {
-      id
-      name
-      description
-      state
-      foundAt {
-        id
-        name
-        createdAt
-        updatedAt
-      }
-      file {
-        id
-        name
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-    createdAt
-    updatedAt
-  }
-}
-mutation DeleteNewFile(
-  $input: DeleteNewFileInput!
-  $condition: ModelNewFileConditionInput
-) {
-  deleteNewFile(input: $input, condition: $condition) {
-    id
-    name
-    belongsTo {
-      id
-      name
-      description
-      state
-      foundAt {
-        id
-        name
-        createdAt
-        updatedAt
-      }
-      file {
-        id
-        name
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
     }
     createdAt
     updatedAt

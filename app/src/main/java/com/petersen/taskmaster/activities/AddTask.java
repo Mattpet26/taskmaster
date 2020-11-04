@@ -2,7 +2,6 @@ package com.petersen.taskmaster.activities;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -11,24 +10,18 @@ import android.os.FileUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
-
 import com.amplifyframework.api.graphql.model.ModelMutation;
 import com.amplifyframework.api.graphql.model.ModelQuery;
 import com.amplifyframework.core.Amplify;
-import com.amplifyframework.datastore.generated.model.NewFile;
 import com.amplifyframework.datastore.generated.model.TaskItem;
 import com.amplifyframework.datastore.generated.model.Team;
 import com.petersen.taskmaster.R;
-import com.petersen.taskmaster.TaskDetail;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -40,7 +33,8 @@ public class AddTask extends AppCompatActivity {
 
     ArrayList<Team> teams;
     private RadioGroup radioTeamGroup;
-    String lastFileUploaded;
+    String globalKey;
+    File fileCopy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +81,11 @@ public class AddTask extends AppCompatActivity {
                     }
                 }
 
+                if (fileCopy.exists()) {
+                    globalKey = fileCopy.getName() + Math.random();
+                    uploadFile(fileCopy, globalKey);
+                }
+
 //================================================= Amplify Add-Task =======================================================================================
                 TaskItem taskClass;
                 taskClass = TaskItem.builder()
@@ -94,28 +93,13 @@ public class AddTask extends AppCompatActivity {
                         .description(description)
                         .state(state)
                         .foundAt(teamSelected)
+                        .file(globalKey)
                         .build();
 
                 Amplify.API.mutate(
                         ModelMutation.create(taskClass),
                         response -> Log.i("AddTaskAmplify", "Your task was saved, you saved ---- " + taskName + " ----"),
                         error -> Log.e("Amplify", error.toString()));
-
-//                NewFile file;
-//                file = NewFile.builder()
-//                        .belongsTo(taskClass)
-//                        .name(lastFileUploaded)
-//                        .build();
-//
-//                Amplify.API.mutate(
-//                        ModelMutation.create(file),
-//                        response -> Log.i("add file", "Your file was saved, you saved ---- " + lastFileUploaded + " ----"),
-//                        error -> Log.e("Amplify", error.toString()));
-//
-//                Amplify.API.mutate(
-//                        ModelMutation.update(taskClass),
-//                        response -> Log.i("add file", "Your file was updated"),
-//                        error -> Log.e("Amplify", error.toString()));
 
                 System.out.println(String.format("task title is %s , description is %s", taskName, description));
                 TextView showSubmit = AddTask.this.findViewById(R.id.show_submit);
@@ -135,11 +119,6 @@ public class AddTask extends AppCompatActivity {
 
 //================================================================= S3
     private void uploadFile(File f, String key) {
-        lastFileUploaded = key;
-
-//        Intent intent = new Intent(AddTask.this, TaskDetail.class);
-//        intent.putExtra("key", key);
-
         Amplify.Storage.uploadFile(
                 key,
                 f,
@@ -159,7 +138,7 @@ public class AddTask extends AppCompatActivity {
         if(requestCode == 99){
             Log.i("Amplify.pickImage", "Got the image back from the activity");
 
-            File fileCopy = new File(getFilesDir(), "test file");
+            fileCopy = new File(getFilesDir(), "test file");
 
             try {
                 InputStream inStream = getContentResolver().openInputStream(data.getData());

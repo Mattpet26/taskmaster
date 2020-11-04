@@ -14,20 +14,7 @@ subscription OnCreateTaskItem {
       createdAt
       updatedAt
     }
-    file {
-      id
-      name
-      belongsTo {
-        id
-        name
-        description
-        state
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
+    file
     createdAt
     updatedAt
   }
@@ -47,20 +34,7 @@ subscription OnUpdateTaskItem {
       createdAt
       updatedAt
     }
-    file {
-      id
-      name
-      belongsTo {
-        id
-        name
-        description
-        state
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
+    file
     createdAt
     updatedAt
   }
@@ -80,20 +54,7 @@ subscription OnDeleteTaskItem {
       createdAt
       updatedAt
     }
-    file {
-      id
-      name
-      belongsTo {
-        id
-        name
-        description
-        state
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
+    file
     createdAt
     updatedAt
   }
@@ -108,6 +69,7 @@ subscription OnCreateTeam {
         name
         description
         state
+        file
         createdAt
         updatedAt
       }
@@ -127,6 +89,7 @@ subscription OnUpdateTeam {
         name
         description
         state
+        file
         createdAt
         updatedAt
       }
@@ -146,94 +109,11 @@ subscription OnDeleteTeam {
         name
         description
         state
+        file
         createdAt
         updatedAt
       }
       nextToken
-    }
-    createdAt
-    updatedAt
-  }
-}
-subscription OnCreateNewFile {
-  onCreateNewFile {
-    id
-    name
-    belongsTo {
-      id
-      name
-      description
-      state
-      foundAt {
-        id
-        name
-        createdAt
-        updatedAt
-      }
-      file {
-        id
-        name
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-    createdAt
-    updatedAt
-  }
-}
-subscription OnUpdateNewFile {
-  onUpdateNewFile {
-    id
-    name
-    belongsTo {
-      id
-      name
-      description
-      state
-      foundAt {
-        id
-        name
-        createdAt
-        updatedAt
-      }
-      file {
-        id
-        name
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-    createdAt
-    updatedAt
-  }
-}
-subscription OnDeleteNewFile {
-  onDeleteNewFile {
-    id
-    name
-    belongsTo {
-      id
-      name
-      description
-      state
-      foundAt {
-        id
-        name
-        createdAt
-        updatedAt
-      }
-      file {
-        id
-        name
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
     }
     createdAt
     updatedAt

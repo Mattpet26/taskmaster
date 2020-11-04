@@ -9,10 +9,10 @@
 * Users can log out. Logged out users do not see logout button.
 
 * 11/3/2020
-* Added image functionality to the add-task page. Images are saved to S3
-* Users can select a task, and see which task they selected
-* Task details page renders image selected from add-task
-* TODO: Retrieve image key for taskDetails
+* Added image functionality to the add-task page. Images are saved to S3.
+* Users can select a task, and see which task they selected.
+* Task details page renders image selected from add-task.
+* Images are unique per task!
 
 ## How to run the app
 * Clone the repository from the github
@@ -30,6 +30,7 @@
 * ![taskImage](screenshots/userloggedout.PNG)
 * ![taskImage](screenshots/userlogged.PNG)
 * ![taskImage](screenshots/recyclerWorking.PNG)
+* ![taskImage](screenshots/taskdetails.PNG)
 * ![taskImage](screenshots/detailsPage.PNG)
 * ![taskImage](screenshots/allTask.PNG)
 * ![taskImage](screenshots/submitWorking.PNG)
