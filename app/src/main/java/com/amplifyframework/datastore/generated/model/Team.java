@@ -22,9 +22,9 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 public final class Team implements Model {
   public static final QueryField ID = field("id");
   public static final QueryField NAME = field("name");
-  public final @ModelField(targetType="ID", isRequired = true) String id;
-  public final @ModelField(targetType="String") String name;
-  public final @ModelField(targetType="TaskItem") @HasMany(associatedWith = "foundAt", type = TaskItem.class) List<TaskItem> taskItems = null;
+    public final @ModelField(targetType="ID", isRequired = true) String id;
+    public final @ModelField(targetType="String") String name;
+    public final @ModelField(targetType="TaskItem") @HasMany(associatedWith = "foundAt", type = TaskItem.class) List<TaskItem> taskItems = null;
   public String getId() {
       return id;
   }

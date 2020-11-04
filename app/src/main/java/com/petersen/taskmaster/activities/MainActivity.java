@@ -224,8 +224,7 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
         intent.putExtra("title", taskClass.name);
         intent.putExtra("description", taskClass.description);
         intent.putExtra("state", taskClass.state);
-        intent.putExtra("keyId", taskClass.file.id);
-        intent.putExtra("keyName", taskClass.file.name);
+        intent.putExtra("key", taskClass.file);
         this.startActivity(intent);
     }
 

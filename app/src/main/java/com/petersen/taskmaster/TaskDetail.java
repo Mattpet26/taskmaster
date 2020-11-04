@@ -40,8 +40,7 @@ public class TaskDetail extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
-        String lastFileUploaded = intent.getStringExtra("key");
-        downloadFile(lastFileUploaded);
+        downloadFile(intent.getExtras().getString("key"));
 
         System.out.println(intent.getExtras().getString("taskName"));
 
