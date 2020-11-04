@@ -23,9 +23,11 @@ import android.widget.TextView;
 import com.amplifyframework.api.graphql.model.ModelMutation;
 import com.amplifyframework.api.graphql.model.ModelQuery;
 import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.generated.model.NewFile;
 import com.amplifyframework.datastore.generated.model.TaskItem;
 import com.amplifyframework.datastore.generated.model.Team;
 import com.petersen.taskmaster.R;
+import com.petersen.taskmaster.TaskDetail;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -77,6 +79,7 @@ public class AddTask extends AppCompatActivity {
 
                 String teamName = selectedTeam.getText().toString();
                 System.out.println(teamName);
+
                 Team teamSelected = null;
                 for (int i = 0; i < teams.size(); i++) {
                     if (teams.get(i).getName().equals(teamName)) {
@@ -98,6 +101,22 @@ public class AddTask extends AppCompatActivity {
                         response -> Log.i("AddTaskAmplify", "Your task was saved, you saved ---- " + taskName + " ----"),
                         error -> Log.e("Amplify", error.toString()));
 
+//                NewFile file;
+//                file = NewFile.builder()
+//                        .belongsTo(taskClass)
+//                        .name(lastFileUploaded)
+//                        .build();
+//
+//                Amplify.API.mutate(
+//                        ModelMutation.create(file),
+//                        response -> Log.i("add file", "Your file was saved, you saved ---- " + lastFileUploaded + " ----"),
+//                        error -> Log.e("Amplify", error.toString()));
+//
+//                Amplify.API.mutate(
+//                        ModelMutation.update(taskClass),
+//                        response -> Log.i("add file", "Your file was updated"),
+//                        error -> Log.e("Amplify", error.toString()));
+
                 System.out.println(String.format("task title is %s , description is %s", taskName, description));
                 TextView showSubmit = AddTask.this.findViewById(R.id.show_submit);
                 showSubmit.setVisibility(View.VISIBLE);
@@ -117,6 +136,10 @@ public class AddTask extends AppCompatActivity {
 //================================================================= S3
     private void uploadFile(File f, String key) {
         lastFileUploaded = key;
+
+//        Intent intent = new Intent(AddTask.this, TaskDetail.class);
+//        intent.putExtra("key", key);
+
         Amplify.Storage.uploadFile(
                 key,
                 f,

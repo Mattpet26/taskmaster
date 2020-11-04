@@ -8,6 +8,12 @@
 * After the user signs in, they are directed to home page. Users can see who they are logged in as. Logout button appears to logged in users.
 * Users can log out. Logged out users do not see logout button.
 
+* 11/3/2020
+* Added image functionality to the add-task page. Images are saved to S3
+* Users can select a task, and see which task they selected
+* Task details page renders image selected from add-task
+* TODO: Retrieve image key for taskDetails
+
 ## How to run the app
 * Clone the repository from the github
 ```

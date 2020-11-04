@@ -79,7 +79,6 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
                 new Handler.Callback() {
                     @Override
                     public boolean handleMessage(@NonNull Message msg) {
-                        System.out.println("Test " + tasks);
                         recyclerView.getAdapter().notifyItemInserted(tasks.size() - 1);
                         return false;
                     }
@@ -112,7 +111,6 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
                 ModelQuery.list(TaskItem.class),
                 response -> {
                     for (TaskItem task : response.getData()) {
-                        System.out.println(task);
                         if (preferences.contains("team")) {
                             if (task.getFoundAt().getName().equals(preferences.getString("team", null))) {
                                 tasks.add(task);
@@ -226,6 +224,8 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
         intent.putExtra("title", taskClass.name);
         intent.putExtra("description", taskClass.description);
         intent.putExtra("state", taskClass.state);
+        intent.putExtra("keyId", taskClass.file.id);
+        intent.putExtra("keyName", taskClass.file.name);
         this.startActivity(intent);
     }
 

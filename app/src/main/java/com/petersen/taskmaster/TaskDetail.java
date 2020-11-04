@@ -39,10 +39,15 @@ public class TaskDetail extends AppCompatActivity {
         setContentView(R.layout.activity_task_detail);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        Intent intent = getIntent();
+        String lastFileUploaded = intent.getStringExtra("key");
         downloadFile(lastFileUploaded);
 
-        Intent intent = getIntent();
         System.out.println(intent.getExtras().getString("taskName"));
+
+        System.out.println(intent.getExtras().getString("keyId"));
+        System.out.println(intent.getExtras().getString("keyName"));
+
 
         TextView taskTitle = TaskDetail.this.findViewById(R.id.task_name_detail);
         taskTitle.setText(intent.getExtras().getString("title") + " details:");
