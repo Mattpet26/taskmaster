@@ -14,6 +14,20 @@ query GetTaskItem($id: ID!) {
       createdAt
       updatedAt
     }
+    file {
+      id
+      name
+      belongsTo {
+        id
+        name
+        description
+        state
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
     createdAt
     updatedAt
   }
@@ -30,6 +44,12 @@ query ListTaskItems(
       description
       state
       foundAt {
+        id
+        name
+        createdAt
+        updatedAt
+      }
+      file {
         id
         name
         createdAt
@@ -71,6 +91,57 @@ query ListTeams(
       name
       taskItems {
         nextToken
+      }
+      createdAt
+      updatedAt
+    }
+    nextToken
+  }
+}
+query GetNewFile($id: ID!) {
+  getNewFile(id: $id) {
+    id
+    name
+    belongsTo {
+      id
+      name
+      description
+      state
+      foundAt {
+        id
+        name
+        createdAt
+        updatedAt
+      }
+      file {
+        id
+        name
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+    createdAt
+    updatedAt
+  }
+}
+query ListNewFiles(
+  $filter: ModelNewFileFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listNewFiles(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      name
+      belongsTo {
+        id
+        name
+        description
+        state
+        createdAt
+        updatedAt
       }
       createdAt
       updatedAt

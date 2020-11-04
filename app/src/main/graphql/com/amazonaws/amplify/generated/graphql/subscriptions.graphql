@@ -14,6 +14,20 @@ subscription OnCreateTaskItem {
       createdAt
       updatedAt
     }
+    file {
+      id
+      name
+      belongsTo {
+        id
+        name
+        description
+        state
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
     createdAt
     updatedAt
   }
@@ -33,6 +47,20 @@ subscription OnUpdateTaskItem {
       createdAt
       updatedAt
     }
+    file {
+      id
+      name
+      belongsTo {
+        id
+        name
+        description
+        state
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
     createdAt
     updatedAt
   }
@@ -48,6 +76,20 @@ subscription OnDeleteTaskItem {
       name
       taskItems {
         nextToken
+      }
+      createdAt
+      updatedAt
+    }
+    file {
+      id
+      name
+      belongsTo {
+        id
+        name
+        description
+        state
+        createdAt
+        updatedAt
       }
       createdAt
       updatedAt
@@ -108,6 +150,90 @@ subscription OnDeleteTeam {
         updatedAt
       }
       nextToken
+    }
+    createdAt
+    updatedAt
+  }
+}
+subscription OnCreateNewFile {
+  onCreateNewFile {
+    id
+    name
+    belongsTo {
+      id
+      name
+      description
+      state
+      foundAt {
+        id
+        name
+        createdAt
+        updatedAt
+      }
+      file {
+        id
+        name
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+    createdAt
+    updatedAt
+  }
+}
+subscription OnUpdateNewFile {
+  onUpdateNewFile {
+    id
+    name
+    belongsTo {
+      id
+      name
+      description
+      state
+      foundAt {
+        id
+        name
+        createdAt
+        updatedAt
+      }
+      file {
+        id
+        name
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+    createdAt
+    updatedAt
+  }
+}
+subscription OnDeleteNewFile {
+  onDeleteNewFile {
+    id
+    name
+    belongsTo {
+      id
+      name
+      description
+      state
+      foundAt {
+        id
+        name
+        createdAt
+        updatedAt
+      }
+      file {
+        id
+        name
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
     }
     createdAt
     updatedAt
