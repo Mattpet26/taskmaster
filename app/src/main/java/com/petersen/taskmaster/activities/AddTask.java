@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+
+import com.amplifyframework.analytics.AnalyticsEvent;
 import com.amplifyframework.api.graphql.model.ModelMutation;
 import com.amplifyframework.api.graphql.model.ModelQuery;
 import com.amplifyframework.core.Amplify;
@@ -27,6 +29,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class AddTask extends AppCompatActivity {
@@ -70,6 +73,13 @@ public class AddTask extends AppCompatActivity {
 
                 RadioGroup teamRadGroup = AddTask.this.findViewById(R.id.radioGroup);
                 RadioButton selectedTeam = AddTask.this.findViewById(teamRadGroup.getCheckedRadioButtonId());
+
+                AnalyticsEvent event = AnalyticsEvent.builder()
+                        .name("added a task")
+                        .addProperty("time", Long.toString(new Date().getTime()))
+                        .addProperty("we can check if users add tasks! ", "we like tracking people")
+                        .build();
+                Amplify.Analytics.recordEvent(event);
 
                 String teamName = selectedTeam.getText().toString();
                 System.out.println(teamName);

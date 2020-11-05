@@ -1,16 +1,14 @@
 # TaskMaster change log (I will delete it every other day, just to keep track of what I did the previous day)
 
-* 11/3/2020
-* Added image functionality to the add-task page. Images are saved to S3.
-* Users can select a task, and see which task they selected.
-* Task details page renders image selected from add-task.
-* Images are unique per task!
-
 * 11/4/2020
 * Implemented SNS.
 * Modified both build.gradle files + manifest
 * Created PushListenerService.java.
 * Downloaded the google-services.json, placed in app.
+
+* 11/5/2020
+* Added analytics to the app
+* Currently tracking when users logout/login, when they direct to add-task page and when they load the main page.
 
 ## How to run the app
 * Clone the repository from the github
@@ -35,3 +33,4 @@
 * ![taskImage](screenshots/dynamoDB.PNG)
 * ![taskImage](screenshots/pinpointCap.PNG)
 * ![taskImage](screenshots/firebirdTest.PNG)
+* ![taskImage](screenshots/eventsHit.PNG)

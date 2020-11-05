@@ -27,6 +27,8 @@ import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobileconnectors.pinpoint.PinpointConfiguration;
 import com.amazonaws.mobileconnectors.pinpoint.PinpointManager;
 import com.amplifyframework.AmplifyException;
+import com.amplifyframework.analytics.AnalyticsEvent;
+import com.amplifyframework.analytics.pinpoint.AWSPinpointAnalyticsPlugin;
 import com.amplifyframework.api.ApiOperation;
 import com.amplifyframework.api.aws.AWSApiPlugin;
 import com.amplifyframework.api.graphql.model.ModelQuery;
@@ -48,6 +50,7 @@ import com.petersen.taskmaster.Signup;
 import com.petersen.taskmaster.TaskDetail;
 import com.petersen.taskmaster.ViewAdapter;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInteractWithTaskListener {
 
@@ -107,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
 
         getPinpointManager(getApplicationContext());
 
-//============================================================================ Handlers ==================================================================
+ //============================================================================ Handlers ==================================================================
         handler = new Handler(Looper.getMainLooper(),
                 new Handler.Callback() {
                     @Override
@@ -145,8 +148,15 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
 
 //============================================================================ onCreate continued ==================================================================
         configureAws();
-//        getPinpointManager(getApplicationContext());
+        getPinpointManager(getApplicationContext());
         getIsSignedIn();
+
+        AnalyticsEvent event = AnalyticsEvent.builder()
+                .name("openedApp")
+                .addProperty("time", Long.toString(new Date().getTime()))
+                .addProperty("so fun, ", "we like tracking people")
+                .build();
+        Amplify.Analytics.recordEvent(event);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String team = preferences.getString("team", null);
@@ -233,6 +243,14 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
             @Override
             public void onClick(View v) {
                 Intent goToAddTask = new Intent(MainActivity.this, Signin.class);
+
+                AnalyticsEvent event = AnalyticsEvent.builder()
+                        .name("signed in")
+                        .addProperty("time", Long.toString(new Date().getTime()))
+                        .addProperty("a user clicked to sign in ", "we like tracking people")
+                        .build();
+                Amplify.Analytics.recordEvent(event);
+
                 MainActivity.this.startActivity(goToAddTask);
             }
         });
@@ -252,6 +270,13 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
                 Button logout = MainActivity.this.findViewById(R.id.logout_button);
                 logout.setVisibility(View.INVISIBLE);
 
+                AnalyticsEvent event = AnalyticsEvent.builder()
+                        .name("logged out")
+                        .addProperty("time", Long.toString(new Date().getTime()))
+                        .addProperty("ahhh a user logged out! ", "we like tracking people")
+                        .build();
+                Amplify.Analytics.recordEvent(event);
+
                 Amplify.Auth.signOut(
                         AuthSignOutOptions.builder().globalSignOut(true).build(),
                         () -> Log.i("AuthQuickstart", "Signed out globally"),
@@ -261,7 +286,7 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
         });
     }
 
-    //==================================================================== task listener ================================================================================================
+//==================================================================== task listener ================================================================================================
     @Override
     public void taskListener(TaskItem taskClass) {
         Intent intent = new Intent(MainActivity.this, TaskDetail.class);
@@ -275,26 +300,27 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
 
 //============================================================================= Callback functions ================================================================================================
 
-    //======================================================== Recycler
+//======================================================== Recycler
     private void connectAdapterToRecycler() {
         recyclerView = findViewById(R.id.recycler_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(new ViewAdapter(tasks, this));
     }
 
-    //======================================================== Amplify
+//======================================================== Amplify
     private void configureAws() {
         try {
             Amplify.addPlugin(new AWSApiPlugin());
             Amplify.addPlugin(new AWSCognitoAuthPlugin());
             Amplify.addPlugin(new AWSS3StoragePlugin());
+            Amplify.addPlugin(new AWSPinpointAnalyticsPlugin(getApplication()));
             Amplify.configure(getApplicationContext());
         } catch (AmplifyException error) {
             Log.e("MyAmplifyApp", "Could not initialize Amplify", error);
         }
     }
 
-    //====================================================== user signed-in
+//====================================================== user signed-in
     public boolean getIsSignedIn() {
         boolean[] isSingedIn = {false};
 
