@@ -105,6 +105,8 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
         setContentView(R.layout.activity_main);
         tasks = new ArrayList<>();
 
+        getPinpointManager(getApplicationContext());
+
 //============================================================================ Handlers ==================================================================
         handler = new Handler(Looper.getMainLooper(),
                 new Handler.Callback() {

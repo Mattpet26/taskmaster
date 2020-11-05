@@ -33,3 +33,5 @@
 * ![taskImage](screenshots/allTask.PNG)
 * ![taskImage](screenshots/submitWorking.PNG)
 * ![taskImage](screenshots/dynamoDB.PNG)
+* ![taskImage](screenshots/pinpointCap.PNG)
+* ![taskImage](screenshots/firebirdTest.PNG)
