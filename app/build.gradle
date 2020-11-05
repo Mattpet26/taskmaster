@@ -51,6 +51,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:18.0.0'
     implementation 'com.google.firebase:firebase-messaging:17.3.0'
 
+    implementation 'com.amplifyframework:aws-analytics-pinpoint:1.4.1'
+
     implementation 'com.amazonaws:aws-android-sdk-pinpoint:2.11.+'
     implementation ('com.amazonaws:aws-android-sdk-mobile-client:2.19.0@aar'){ transitive = true}
 
