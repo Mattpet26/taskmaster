@@ -5,11 +5,12 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.FileUtils;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -18,6 +19,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobile.client.Callback;
+import com.amazonaws.mobile.client.UserStateDetails;
+import com.amazonaws.mobile.config.AWSConfiguration;
+import com.amazonaws.mobileconnectors.pinpoint.PinpointConfiguration;
+import com.amazonaws.mobileconnectors.pinpoint.PinpointManager;
 import com.amplifyframework.AmplifyException;
 import com.amplifyframework.api.ApiOperation;
 import com.amplifyframework.api.aws.AWSApiPlugin;
@@ -28,24 +36,17 @@ import com.amplifyframework.auth.options.AuthSignOutOptions;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.TaskItem;
 import com.amplifyframework.datastore.generated.model.Team;
-import com.amplifyframework.storage.options.StorageDownloadFileOptions;
 import com.amplifyframework.storage.s3.AWSS3StoragePlugin;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.petersen.taskmaster.AllTasks;
 import com.petersen.taskmaster.R;
 import com.petersen.taskmaster.Signin;
 import com.petersen.taskmaster.Signup;
 import com.petersen.taskmaster.TaskDetail;
 import com.petersen.taskmaster.ViewAdapter;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInteractWithTaskListener {
@@ -57,12 +58,54 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
     Handler handleSingleItem;
     Handler handlecheckLoggedIn;
 
+        public static final String TAG = "Amplify";
+
+        private static PinpointManager pinpointManager;
+
+        public static PinpointManager getPinpointManager(final Context applicationContext) {
+            if (pinpointManager == null) {
+                final AWSConfiguration awsConfig = new AWSConfiguration(applicationContext);
+                AWSMobileClient.getInstance().initialize(applicationContext, awsConfig, new Callback<UserStateDetails>() {
+                    @Override
+                    public void onResult(UserStateDetails userStateDetails) {
+                        Log.i("INIT", userStateDetails.getUserState().toString());
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e("INIT", "Initialization error.", e);
+                    }
+                });
+
+                PinpointConfiguration pinpointConfig = new PinpointConfiguration(
+                        applicationContext,
+                        AWSMobileClient.getInstance(),
+                        awsConfig);
+
+                pinpointManager = new PinpointManager(pinpointConfig);
+
+                FirebaseInstanceId.getInstance().getInstanceId()
+                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                                final String token = task.getResult().getToken();
+                                Log.d(TAG, "Registering push notifications token: " + token);
+                                pinpointManager.getNotificationClient().registerDeviceToken(token);
+                            }
+                        });
+            }
+            return pinpointManager;
+        }
+
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         tasks = new ArrayList<>();
+
+        getPinpointManager(getApplicationContext());
 
 //============================================================================ Handlers ==================================================================
         handler = new Handler(Looper.getMainLooper(),
@@ -102,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
 
 //============================================================================ onCreate continued ==================================================================
         configureAws();
+//        getPinpointManager(getApplicationContext());
         getIsSignedIn();
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
