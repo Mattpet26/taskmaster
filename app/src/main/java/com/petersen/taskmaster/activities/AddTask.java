@@ -4,6 +4,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.FileUtils;
@@ -43,6 +44,8 @@ public class AddTask extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
+
+        parseIntentFilter();
 
         teams = new ArrayList<>();
         Amplify.API.query(
@@ -117,7 +120,7 @@ public class AddTask extends AppCompatActivity {
             }
         });
 
-    //================================================================ Pictures ======================================================================================================
+//================================================================ Pictures ======================================================================================================
     Button getPics = AddTask.this.findViewById(R.id.add_image);
     getPics.setOnClickListener(new View.OnClickListener() {
         @Override
@@ -181,6 +184,25 @@ public class AddTask extends AppCompatActivity {
         Intent getPicture = new Intent(Intent.ACTION_GET_CONTENT);
         getPicture.setType("*/*");
         startActivityForResult(getPicture, 99);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public void parseIntentFilter(){
+        Intent intent = getIntent();
+        if(intent.getType() != null && intent.getType().equals("image/jpeg")){
+            intent.getStringExtra(Intent.ACTION_GET_CONTENT);
+            Uri image = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+            fileCopy = new File(getFilesDir(), "test file");
+
+            try {
+                InputStream inputStream = getContentResolver().openInputStream(image);
+                FileUtils.copy(inputStream, new FileOutputStream(fileCopy));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Log.i("retrieved an image", intent.getType() + "=========================================================");
+        }
     }
 
 //=============================================== options =======================================================================================================

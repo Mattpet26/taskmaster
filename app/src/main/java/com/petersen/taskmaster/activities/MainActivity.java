@@ -43,7 +43,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-import com.petersen.taskmaster.AllTasks;
 import com.petersen.taskmaster.R;
 import com.petersen.taskmaster.Signin;
 import com.petersen.taskmaster.Signup;
@@ -60,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
     Handler handler;
     Handler handleSingleItem;
     Handler handlecheckLoggedIn;
+//    Handler handleRecycleViewUpdate;
 
         public static final String TAG = "Amplify";
 
@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
             return pinpointManager;
         }
 
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
         tasks = new ArrayList<>();
 
         getPinpointManager(getApplicationContext());
+//        parseIntentFilter();
 
  //============================================================================ Handlers ==================================================================
         handler = new Handler(Looper.getMainLooper(),
@@ -146,8 +146,16 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
             return false;
         });
 
+//        handleRecycleViewUpdate = new Handler(Looper.getMainLooper(), new Handler.Callback() {
+//            @Override
+//            public boolean handleMessage(@NonNull Message msg) {
+//                updateRecyclerView();
+//                return false;
+//            }
+//        });
+
 //============================================================================ onCreate continued ==================================================================
-        configureAws();
+                configureAws();
         getPinpointManager(getApplicationContext());
         getIsSignedIn();
 
@@ -159,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
         Amplify.Analytics.recordEvent(event);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String team = preferences.getString("team", null);
+//        String team = preferences.getString("team", null);
 
         Amplify.API.query(
                 ModelQuery.list(TaskItem.class),
@@ -198,12 +206,13 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
         );
 
 //============================================================== Direct All-Tasks =======================================================================================
-        Button all_tasks = MainActivity.this.findViewById(R.id.all_tasks);
-        all_tasks.setOnClickListener(new View.OnClickListener() {
+        Button messages = MainActivity.this.findViewById(R.id.check_messages);
+        messages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent goToAllTasks = new Intent(MainActivity.this, AllTasks.class);
-                MainActivity.this.startActivity(goToAllTasks);
+                Intent gotoMessages = new Intent(MainActivity.this, AddTask.class);
+                gotoMessages.putExtra("key", "value");
+                MainActivity.this.startActivity(gotoMessages);
             }
         });
 
@@ -341,13 +350,29 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
         return isSingedIn[0];
     }
 
+//======================================================== parse intent
+//    public void parseIntentFilter(){
+//            Intent intent = getIntent();
+//            if(intent.getType() != null && intent.getType().equals("text/plain")){
+//
+//                String text = intent.getStringExtra(Intent.EXTRA_TEXT);
+//                int counter = 0;
+//                for(TaskItem s : tasks){
+//                    if (s.name.equals(text)){
+//                        Log.i("Intent filter", "You found a task from the filter!");
+//                         = counter;
+//                        handleRecycleViewUpdate.sendEmptyMessage(1);
+//                    }
+//                    counter++;
+//                }
+//            }
+//    }
+
 //============================================================================ On Resume =================================================================================================
     @Override
     public void onResume() {
         super.onResume();
         SharedPreferences preference = PreferenceManager.getDefaultSharedPreferences(this);
-        TextView userTask = findViewById(R.id.user_task_list);
-        userTask.setText(preference.getString("username", "My Tasks"));
 
         RecyclerView recyclerView = findViewById(R.id.recycler_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

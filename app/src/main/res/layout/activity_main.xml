@@ -33,7 +33,7 @@
         tools:listitem="@layout/recycler_view_item" />
 
     <TextView
-        android:id="@+id/user_task_list"
+        android:id="@+id/my_tasks"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
@@ -44,12 +44,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/all_tasks"
+        android:id="@+id/check_messages"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="36dp"
-        android:text="All Tasks"
+        android:text="Messages"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/setting_button"
@@ -62,7 +62,7 @@
         android:layout_marginBottom="16dp"
         android:text="Settings"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/all_tasks"
+        app:layout_constraintEnd_toStartOf="@+id/check_messages"
         app:layout_constraintHorizontal_bias="0.546"
         app:layout_constraintStart_toEndOf="@+id/add_task" />
 
@@ -73,7 +73,7 @@
         android:layout_marginStart="16dp"
         android:text="Add Task"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/all_tasks"
+        app:layout_constraintEnd_toStartOf="@+id/check_messages"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/setting_button"
@@ -86,7 +86,7 @@
         android:layout_marginTop="564dp"
         android:layout_marginEnd="20dp"
         android:text="Sign In"
-        app:layout_constraintBottom_toTopOf="@+id/all_tasks"
+        app:layout_constraintBottom_toTopOf="@+id/check_messages"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.418" />
@@ -102,7 +102,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user_task_list" />
+        app:layout_constraintTop_toBottomOf="@+id/my_tasks" />
 
     <Button
         android:id="@+id/logout_button"
