@@ -36,10 +36,10 @@ import java.util.Date;
 public class AddTask extends AppCompatActivity {
 
     ArrayList<Team> teams;
-    private RadioGroup radioTeamGroup;
     String globalKey;
     File fileCopy;
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -191,15 +191,19 @@ public class AddTask extends AppCompatActivity {
         Intent intent = getIntent();
         if(intent.getType() != null && intent.getType().equals("image/jpeg")){
             intent.getStringExtra(Intent.ACTION_GET_CONTENT);
-            Uri image = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+            Uri imgData = intent.getParcelableExtra(Intent.EXTRA_STREAM);
             fileCopy = new File(getFilesDir(), "test file");
 
+
             try {
-                InputStream inputStream = getContentResolver().openInputStream(image);
-                FileUtils.copy(inputStream, new FileOutputStream(fileCopy));
+                InputStream inStream = getContentResolver().openInputStream(imgData);
+                FileUtils.copy(inStream, new FileOutputStream(fileCopy));
             } catch (IOException e) {
                 e.printStackTrace();
+                Log.e("Amplify.pickImage", e.toString());
             }
+            ImageView image = findViewById(R.id.imageView);
+            image.setImageURI(imgData);
 
             Log.i("retrieved an image", intent.getType() + "=========================================================");
         }
