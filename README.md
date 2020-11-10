@@ -1,10 +1,11 @@
 # TaskMaster change log (I will delete it every other day, just to keep track of what I did the previous day)
 
-* 11/4/2020
-* Implemented SNS.
-* Modified both build.gradle files + manifest
-* Created PushListenerService.java.
-* Downloaded the google-services.json, placed in app.
+* 11/9/2020
+* Implemented intent filter
+* Users can now select/share an image and taskmaster appears
+* If a user clicks to share, they are directed to the add-task page
+* The image is displayed at the add task, and is saved to that specific task
+* Users can check by clicking the recycler to view the image (it takes awhile to load)
 
 * 11/5/2020
 * Added analytics to the app
@@ -22,15 +23,11 @@
 
 
 ## Screen shots of working app
-* ![taskImage](screenshots/addTask.PNG)
-* ![taskImage](screenshots/userloggedout.PNG)
-* ![taskImage](screenshots/userlogged.PNG)
-* ![taskImage](screenshots/recyclerWorking.PNG)
 * ![taskImage](screenshots/taskdetails.PNG)
 * ![taskImage](screenshots/detailsPage.PNG)
-* ![taskImage](screenshots/allTask.PNG)
-* ![taskImage](screenshots/submitWorking.PNG)
-* ![taskImage](screenshots/dynamoDB.PNG)
 * ![taskImage](screenshots/pinpointCap.PNG)
 * ![taskImage](screenshots/firebirdTest.PNG)
-* ![taskImage](screenshots/eventsHit.PNG)
+
+* ![taskImage](screenshots/imagessaved.PNG)
+* ![taskImage](screenshots/savedTask.PNG)
+* ![taskImage](screenshots/shareable.PNG)
