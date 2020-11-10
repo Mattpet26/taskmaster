@@ -32,15 +32,11 @@ public class Settings extends AppCompatActivity {
         login_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText username = findViewById(R.id.editUsernameText);
-                System.out.println(username.getText().toString());
 
                 RadioGroup radioGroup = Settings.this.findViewById(R.id.radioGroup);
                 RadioButton radioButton = Settings.this.findViewById(radioGroup.getCheckedRadioButtonId());
                 String team = radioButton.getText().toString();
 
-
-                preferenceEditor.putString("username", username.getText().toString() + "'s task(s):");
                 preferenceEditor.putString("team", team);
                 preferenceEditor.apply();
 
