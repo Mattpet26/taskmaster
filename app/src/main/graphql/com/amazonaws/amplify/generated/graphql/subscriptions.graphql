@@ -15,6 +15,7 @@ subscription OnCreateTaskItem {
       updatedAt
     }
     file
+    location
     createdAt
     updatedAt
   }
@@ -35,6 +36,7 @@ subscription OnUpdateTaskItem {
       updatedAt
     }
     file
+    location
     createdAt
     updatedAt
   }
@@ -55,6 +57,7 @@ subscription OnDeleteTaskItem {
       updatedAt
     }
     file
+    location
     createdAt
     updatedAt
   }
@@ -70,6 +73,7 @@ subscription OnCreateTeam {
         description
         state
         file
+        location
         createdAt
         updatedAt
       }
@@ -90,6 +94,7 @@ subscription OnUpdateTeam {
         description
         state
         file
+        location
         createdAt
         updatedAt
       }
@@ -110,6 +115,7 @@ subscription OnDeleteTeam {
         description
         state
         file
+        location
         createdAt
         updatedAt
       }

@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.petersen.taskmaster">
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -24,9 +26,7 @@
                         android:label="Add Image">
                         <action android:name="android.intent.action.SEND"/>
                         <category android:name="android.intent.category.DEFAULT"/>
-                        <data android:mimeType="image/*"/>
-<!--                        <data android:mimeType="text/plain"/>-->
-                    </intent-filter>
+                        <data android:mimeType="image/*"/></intent-filter>
         </activity>
         <activity android:name=".activities.MainActivity">
             <intent-filter>

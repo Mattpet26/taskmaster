@@ -7,9 +7,9 @@
 * The image is displayed at the add task, and is saved to that specific task
 * Users can check by clicking the recycler to view the image (it takes awhile to load)
 
-* 11/5/2020
-* Added analytics to the app
-* Currently tracking when users logout/login, when they direct to add-task page and when they load the main page.
+* 11/10/2020
+* Users can now enter in a location to the task, the ... button takes the user to the locations available
+* The task remembers where each tasks location is
 
 ## How to run the app
 * Clone the repository from the github
@@ -23,11 +23,10 @@
 
 
 ## Screen shots of working app
-* ![taskImage](screenshots/taskdetails.PNG)
-* ![taskImage](screenshots/detailsPage.PNG)
 * ![taskImage](screenshots/pinpointCap.PNG)
 * ![taskImage](screenshots/firebirdTest.PNG)
 
 * ![taskImage](screenshots/imagessaved.PNG)
 * ![taskImage](screenshots/savedTask.PNG)
 * ![taskImage](screenshots/shareable.PNG)
+* ![taskImage](screenshots/locationWorking.PNG)

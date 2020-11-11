@@ -15,6 +15,7 @@ query GetTaskItem($id: ID!) {
       updatedAt
     }
     file
+    location
     createdAt
     updatedAt
   }
@@ -37,6 +38,7 @@ query ListTaskItems(
         updatedAt
       }
       file
+      location
       createdAt
       updatedAt
     }
@@ -54,6 +56,7 @@ query GetTeam($id: ID!) {
         description
         state
         file
+        location
         createdAt
         updatedAt
       }

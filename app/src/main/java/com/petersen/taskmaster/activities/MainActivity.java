@@ -1,14 +1,19 @@
 package com.petersen.taskmaster.activities;
 
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,6 +44,11 @@ import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.TaskItem;
 import com.amplifyframework.datastore.generated.model.Team;
 import com.amplifyframework.storage.s3.AWSS3StoragePlugin;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -48,6 +58,7 @@ import com.petersen.taskmaster.Signin;
 import com.petersen.taskmaster.Signup;
 import com.petersen.taskmaster.TaskDetail;
 import com.petersen.taskmaster.ViewAdapter;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -55,50 +66,48 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
 
     ArrayList<TaskItem> tasks;
     RecyclerView recyclerView;
-    ArrayList<Team> teams;
     Handler handler;
     Handler handleSingleItem;
     Handler handlecheckLoggedIn;
-//    Handler handleRecycleViewUpdate;
 
-        public static final String TAG = "Amplify";
+    public static final String TAG = "Amplify";
 
-        private static PinpointManager pinpointManager;
+    private static PinpointManager pinpointManager;
 
-        public static PinpointManager getPinpointManager(final Context applicationContext) {
-            if (pinpointManager == null) {
-                final AWSConfiguration awsConfig = new AWSConfiguration(applicationContext);
-                AWSMobileClient.getInstance().initialize(applicationContext, awsConfig, new Callback<UserStateDetails>() {
-                    @Override
-                    public void onResult(UserStateDetails userStateDetails) {
-                        Log.i("INIT", userStateDetails.getUserState().toString());
-                    }
+    public static PinpointManager getPinpointManager(final Context applicationContext) {
+        if (pinpointManager == null) {
+            final AWSConfiguration awsConfig = new AWSConfiguration(applicationContext);
+            AWSMobileClient.getInstance().initialize(applicationContext, awsConfig, new Callback<UserStateDetails>() {
+                @Override
+                public void onResult(UserStateDetails userStateDetails) {
+                    Log.i("INIT", userStateDetails.getUserState().toString());
+                }
 
-                    @Override
-                    public void onError(Exception e) {
-                        Log.e("INIT", "Initialization error.", e);
-                    }
-                });
+                @Override
+                public void onError(Exception e) {
+                    Log.e("INIT", "Initialization error.", e);
+                }
+            });
 
-                PinpointConfiguration pinpointConfig = new PinpointConfiguration(
-                        applicationContext,
-                        AWSMobileClient.getInstance(),
-                        awsConfig);
+            PinpointConfiguration pinpointConfig = new PinpointConfiguration(
+                    applicationContext,
+                    AWSMobileClient.getInstance(),
+                    awsConfig);
 
-                pinpointManager = new PinpointManager(pinpointConfig);
+            pinpointManager = new PinpointManager(pinpointConfig);
 
-                FirebaseInstanceId.getInstance().getInstanceId()
-                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                                final String token = task.getResult().getToken();
-                                Log.d(TAG, "Registering push notifications token: " + token);
-                                pinpointManager.getNotificationClient().registerDeviceToken(token);
-                            }
-                        });
-            }
-            return pinpointManager;
+            FirebaseInstanceId.getInstance().getInstanceId()
+                    .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                            final String token = task.getResult().getToken();
+                            Log.d(TAG, "Registering push notifications token: " + token);
+                            pinpointManager.getNotificationClient().registerDeviceToken(token);
+                        }
+                    });
         }
+        return pinpointManager;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -108,9 +117,8 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
         tasks = new ArrayList<>();
 
         getPinpointManager(getApplicationContext());
-//        parseIntentFilter();
 
- //============================================================================ Handlers ==================================================================
+        //============================================================================ Handlers ==================================================================
         handler = new Handler(Looper.getMainLooper(),
                 new Handler.Callback() {
                     @Override
@@ -146,16 +154,8 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
             return false;
         });
 
-//        handleRecycleViewUpdate = new Handler(Looper.getMainLooper(), new Handler.Callback() {
-//            @Override
-//            public boolean handleMessage(@NonNull Message msg) {
-//                updateRecyclerView();
-//                return false;
-//            }
-//        });
-
 //============================================================================ onCreate continued ==================================================================
-                configureAws();
+        configureAws();
         getPinpointManager(getApplicationContext());
         getIsSignedIn();
 
@@ -167,7 +167,6 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
         Amplify.Analytics.recordEvent(event);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-//        String team = preferences.getString("team", null);
 
         Amplify.API.query(
                 ModelQuery.list(TaskItem.class),
@@ -295,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
         });
     }
 
-//==================================================================== task listener ================================================================================================
+    //==================================================================== task listener ================================================================================================
     @Override
     public void taskListener(TaskItem taskClass) {
         Intent intent = new Intent(MainActivity.this, TaskDetail.class);
@@ -303,20 +302,21 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
         intent.putExtra("description", taskClass.description);
         intent.putExtra("state", taskClass.state);
         intent.putExtra("key", taskClass.file);
+        intent.putExtra("location", taskClass.location);
         this.startActivity(intent);
     }
 
 
 //============================================================================= Callback functions ================================================================================================
 
-//======================================================== Recycler
+    //======================================================== Recycler
     private void connectAdapterToRecycler() {
         recyclerView = findViewById(R.id.recycler_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(new ViewAdapter(tasks, this));
     }
 
-//======================================================== Amplify
+    //======================================================== Amplify
     private void configureAws() {
         try {
             Amplify.addPlugin(new AWSApiPlugin());
@@ -329,7 +329,7 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
         }
     }
 
-//====================================================== user signed-in
+    //====================================================== user signed-in
     public boolean getIsSignedIn() {
         boolean[] isSingedIn = {false};
 
@@ -350,29 +350,10 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
         return isSingedIn[0];
     }
 
-//======================================================== parse intent
-//    public void parseIntentFilter(){
-//            Intent intent = getIntent();
-//            if(intent.getType() != null && intent.getType().equals("text/plain")){
-//
-//                String text = intent.getStringExtra(Intent.EXTRA_TEXT);
-//                int counter = 0;
-//                for(TaskItem s : tasks){
-//                    if (s.name.equals(text)){
-//                        Log.i("Intent filter", "You found a task from the filter!");
-//                         = counter;
-//                        handleRecycleViewUpdate.sendEmptyMessage(1);
-//                    }
-//                    counter++;
-//                }
-//            }
-//    }
-
-//============================================================================ On Resume =================================================================================================
+    //============================================================================ On Resume =================================================================================================
     @Override
     public void onResume() {
         super.onResume();
-        SharedPreferences preference = PreferenceManager.getDefaultSharedPreferences(this);
 
         RecyclerView recyclerView = findViewById(R.id.recycler_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
