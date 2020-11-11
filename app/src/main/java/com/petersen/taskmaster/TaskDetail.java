@@ -43,7 +43,6 @@ public class TaskDetail extends AppCompatActivity {
         downloadFile(intent.getExtras().getString("key"));
 
         System.out.println(intent.getExtras().getString("taskName"));
-
         System.out.println(intent.getExtras().getString("keyId"));
         System.out.println(intent.getExtras().getString("keyName"));
 
@@ -56,6 +55,9 @@ public class TaskDetail extends AppCompatActivity {
 
         TextView taskState = TaskDetail.this.findViewById(R.id.task_state);
         taskState.setText(intent.getExtras().getString("state"));
+
+        TextView location = TaskDetail.this.findViewById(R.id.location_id);
+        location.setText(intent.getExtras().getString("location"));
     }
     //========================================================== S3 ===================================================================================================
     private void downloadFile(String fileKey) {

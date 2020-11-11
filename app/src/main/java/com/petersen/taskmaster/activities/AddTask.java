@@ -2,8 +2,15 @@ package com.petersen.taskmaster.activities;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,13 +31,21 @@ import com.amplifyframework.api.graphql.model.ModelQuery;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.TaskItem;
 import com.amplifyframework.datastore.generated.model.Team;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.petersen.taskmaster.R;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 
 public class AddTask extends AppCompatActivity {
@@ -38,6 +53,9 @@ public class AddTask extends AppCompatActivity {
     ArrayList<Team> teams;
     String globalKey;
     File fileCopy;
+    Location currentLocation;
+    FusedLocationProviderClient locationProviderClient;
+    String addressString;
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
@@ -46,6 +64,9 @@ public class AddTask extends AppCompatActivity {
         setContentView(R.layout.activity_add_task);
 
         parseIntentFilter();
+        askForPermission();
+        configureLocationServices();
+        askLocation();
 
         teams = new ArrayList<>();
         Amplify.API.query(
@@ -107,6 +128,7 @@ public class AddTask extends AppCompatActivity {
                         .state(state)
                         .foundAt(teamSelected)
                         .file(globalKey)
+                        .location(addressString)
                         .build();
 
                 Amplify.API.mutate(
@@ -121,16 +143,16 @@ public class AddTask extends AppCompatActivity {
         });
 
 //================================================================ Pictures ======================================================================================================
-    Button getPics = AddTask.this.findViewById(R.id.add_image);
-    getPics.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            retrieveFile();
-        }
-    });
-}
+        Button getPics = AddTask.this.findViewById(R.id.add_image);
+        getPics.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                retrieveFile();
+            }
+        });
+    }
 
-//================================================================= S3
+    //================================================================= S3
     private void uploadFile(File f, String key) {
         Amplify.Storage.uploadFile(
                 key,
@@ -148,7 +170,7 @@ public class AddTask extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == 99){
+        if (requestCode == 99) {
             Log.i("Amplify.pickImage", "Got the image back from the activity");
 
             fileCopy = new File(getFilesDir(), "test file");
@@ -180,16 +202,16 @@ public class AddTask extends AppCompatActivity {
         );
     }
 
-    public void retrieveFile(){
+    public void retrieveFile() {
         Intent getPicture = new Intent(Intent.ACTION_GET_CONTENT);
         getPicture.setType("*/*");
         startActivityForResult(getPicture, 99);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    public void parseIntentFilter(){
+    public void parseIntentFilter() {
         Intent intent = getIntent();
-        if(intent.getType() != null && intent.getType().equals("image/jpeg")){
+        if (intent.getType() != null && intent.getType().equals("image/jpeg")) {
             intent.getStringExtra(Intent.ACTION_GET_CONTENT);
             Uri imgData = intent.getParcelableExtra(Intent.EXTRA_STREAM);
             fileCopy = new File(getFilesDir(), "test file");
@@ -209,7 +231,56 @@ public class AddTask extends AppCompatActivity {
         }
     }
 
-//=============================================== options =======================================================================================================
+    //======================================================= location
+    public void configureLocationServices() {
+        locationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+    }
+
+    public void askLocation() {
+        LocationRequest locationRequest;
+        LocationCallback locationCallback;
+
+        locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(10000);
+
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                currentLocation = locationResult.getLastLocation();
+                Log.i("Amplify_location", currentLocation.toString());
+
+                Geocoder geocoder = new Geocoder(AddTask.this, Locale.getDefault());
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 10);
+                    addressString = addresses.get(0).getAddressLine(0);
+                    Log.i("Amplify address", addressString);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationProviderClient.requestLocationUpdates(locationRequest, locationCallback, getMainLooper());
+    }
+
+    public void askForPermission(){
+        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 2);
+    }
+
+    //=============================================== options =======================================================================================================
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent = new Intent(AddTask.this, MainActivity.class);

@@ -26,12 +26,14 @@ public final class TaskItem implements Model {
   public static final QueryField STATE = field("state");
   public static final QueryField FOUND_AT = field("taskItemFoundAtId");
   public static final QueryField FILE = field("file");
+  public static final QueryField LOCATION = field("location");
     public final @ModelField(targetType="ID", isRequired = true) String id;
     public final @ModelField(targetType="String", isRequired = true) String name;
     public final @ModelField(targetType="String") String description;
     public final @ModelField(targetType="String") String state;
     public final @ModelField(targetType="Team") @BelongsTo(targetName = "taskItemFoundAtId", type = Team.class) Team foundAt;
     public final @ModelField(targetType="String") String file;
+    public final @ModelField(targetType="String") String location;
   public String getId() {
       return id;
   }
@@ -56,13 +58,18 @@ public final class TaskItem implements Model {
       return file;
   }
   
-  private TaskItem(String id, String name, String description, String state, Team foundAt, String file) {
+  public String getLocation() {
+      return location;
+  }
+  
+  private TaskItem(String id, String name, String description, String state, Team foundAt, String file, String location) {
     this.id = id;
     this.name = name;
     this.description = description;
     this.state = state;
     this.foundAt = foundAt;
     this.file = file;
+    this.location = location;
   }
   
   @Override
@@ -78,7 +85,8 @@ public final class TaskItem implements Model {
               ObjectsCompat.equals(getDescription(), taskItem.getDescription()) &&
               ObjectsCompat.equals(getState(), taskItem.getState()) &&
               ObjectsCompat.equals(getFoundAt(), taskItem.getFoundAt()) &&
-              ObjectsCompat.equals(getFile(), taskItem.getFile());
+              ObjectsCompat.equals(getFile(), taskItem.getFile()) &&
+              ObjectsCompat.equals(getLocation(), taskItem.getLocation());
       }
   }
   
@@ -91,6 +99,7 @@ public final class TaskItem implements Model {
       .append(getState())
       .append(getFoundAt())
       .append(getFile())
+      .append(getLocation())
       .toString()
       .hashCode();
   }
@@ -104,7 +113,8 @@ public final class TaskItem implements Model {
       .append("description=" + String.valueOf(getDescription()) + ", ")
       .append("state=" + String.valueOf(getState()) + ", ")
       .append("foundAt=" + String.valueOf(getFoundAt()) + ", ")
-      .append("file=" + String.valueOf(getFile()))
+      .append("file=" + String.valueOf(getFile()) + ", ")
+      .append("location=" + String.valueOf(getLocation()))
       .append("}")
       .toString();
   }
@@ -138,6 +148,7 @@ public final class TaskItem implements Model {
       null,
       null,
       null,
+      null,
       null
     );
   }
@@ -148,7 +159,8 @@ public final class TaskItem implements Model {
       description,
       state,
       foundAt,
-      file);
+      file,
+      location);
   }
   public interface NameStep {
     BuildStep name(String name);
@@ -162,6 +174,7 @@ public final class TaskItem implements Model {
     BuildStep state(String state);
     BuildStep foundAt(Team foundAt);
     BuildStep file(String file);
+    BuildStep location(String location);
   }
   
 
@@ -172,6 +185,7 @@ public final class TaskItem implements Model {
     private String state;
     private Team foundAt;
     private String file;
+    private String location;
     @Override
      public TaskItem build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
@@ -182,7 +196,8 @@ public final class TaskItem implements Model {
           description,
           state,
           foundAt,
-          file);
+          file,
+          location);
     }
     
     @Override
@@ -216,6 +231,12 @@ public final class TaskItem implements Model {
         return this;
     }
     
+    @Override
+     public BuildStep location(String location) {
+        this.location = location;
+        return this;
+    }
+    
     /** 
      * WARNING: Do not set ID when creating a new object. Leave this blank and one will be auto generated for you.
      * This should only be set when referring to an already existing object.
@@ -239,13 +260,14 @@ public final class TaskItem implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, String name, String description, String state, Team foundAt, String file) {
+    private CopyOfBuilder(String id, String name, String description, String state, Team foundAt, String file, String location) {
       super.id(id);
       super.name(name)
         .description(description)
         .state(state)
         .foundAt(foundAt)
-        .file(file);
+        .file(file)
+        .location(location);
     }
     
     @Override
@@ -271,6 +293,11 @@ public final class TaskItem implements Model {
     @Override
      public CopyOfBuilder file(String file) {
       return (CopyOfBuilder) super.file(file);
+    }
+    
+    @Override
+     public CopyOfBuilder location(String location) {
+      return (CopyOfBuilder) super.location(location);
     }
   }
   
