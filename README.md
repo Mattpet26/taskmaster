@@ -1,11 +1,7 @@
 # TaskMaster change log (I will delete it every other day, just to keep track of what I did the previous day)
 
-* 11/9/2020
-* Implemented intent filter
-* Users can now select/share an image and taskmaster appears
-* If a user clicks to share, they are directed to the add-task page
-* The image is displayed at the add task, and is saved to that specific task
-* Users can check by clicking the recycler to view the image (it takes awhile to load)
+* 11/11/2020
+* Implemented an ad banner on MainActivity
 
 * 11/10/2020
 * Users can now enter in a location to the task, the ... button takes the user to the locations available
