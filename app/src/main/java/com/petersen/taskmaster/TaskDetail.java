@@ -42,11 +42,6 @@ public class TaskDetail extends AppCompatActivity {
         Intent intent = getIntent();
         downloadFile(intent.getExtras().getString("key"));
 
-        System.out.println(intent.getExtras().getString("taskName"));
-        System.out.println(intent.getExtras().getString("keyId"));
-        System.out.println(intent.getExtras().getString("keyName"));
-
-
         TextView taskTitle = TaskDetail.this.findViewById(R.id.task_name_detail);
         taskTitle.setText(intent.getExtras().getString("title") + " details:");
 

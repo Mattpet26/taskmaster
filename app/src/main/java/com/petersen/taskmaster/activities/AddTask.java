@@ -24,7 +24,6 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-
 import com.amplifyframework.analytics.AnalyticsEvent;
 import com.amplifyframework.api.graphql.model.ModelMutation;
 import com.amplifyframework.api.graphql.model.ModelQuery;
@@ -37,7 +36,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.petersen.taskmaster.R;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -64,7 +62,7 @@ public class AddTask extends AppCompatActivity {
         setContentView(R.layout.activity_add_task);
 
         parseIntentFilter();
-        askForPermission();
+//        askForPermission();
         configureLocationServices();
         askLocation();
 
@@ -152,7 +150,8 @@ public class AddTask extends AppCompatActivity {
         });
     }
 
-    //================================================================= S3
+//============================================================================== METHODS ===============================================================================================
+//================================================================= S3
     private void uploadFile(File f, String key) {
         Amplify.Storage.uploadFile(
                 key,
@@ -231,7 +230,7 @@ public class AddTask extends AppCompatActivity {
         }
     }
 
-    //======================================================= location
+//======================================================= location
     public void configureLocationServices() {
         locationProviderClient = LocationServices.getFusedLocationProviderClient(this);
     }
@@ -243,10 +242,12 @@ public class AddTask extends AppCompatActivity {
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(10000);
+        System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
 
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
+
                 if (locationResult == null) {
                     return;
                 }
@@ -264,19 +265,14 @@ public class AddTask extends AppCompatActivity {
             }
         };
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            askForPermission();
             return;
         }
         locationProviderClient.requestLocationUpdates(locationRequest, locationCallback, getMainLooper());
     }
 
     public void askForPermission(){
+        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 2);
     }
 

@@ -1,6 +1,5 @@
 package com.petersen.taskmaster.activities;
 
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +12,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,7 +25,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.client.Callback;
 import com.amazonaws.mobile.client.UserStateDetails;
@@ -42,8 +42,10 @@ import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;
 import com.amplifyframework.auth.options.AuthSignOutOptions;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.TaskItem;
-import com.amplifyframework.datastore.generated.model.Team;
 import com.amplifyframework.storage.s3.AWSS3StoragePlugin;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -59,16 +61,23 @@ import com.petersen.taskmaster.Signup;
 import com.petersen.taskmaster.TaskDetail;
 import com.petersen.taskmaster.ViewAdapter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInteractWithTaskListener {
 
+    private AdView mAdView;
     ArrayList<TaskItem> tasks;
     RecyclerView recyclerView;
     Handler handler;
     Handler handleSingleItem;
     Handler handlecheckLoggedIn;
+    Location currentLocation;
+    FusedLocationProviderClient locationProviderClient;
+    String addressString;
 
     public static final String TAG = "Amplify";
 
@@ -117,6 +126,9 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
         tasks = new ArrayList<>();
 
         getPinpointManager(getApplicationContext());
+        askForPermission();
+        configureLocationServices();
+        askLocation();
 
         //============================================================================ Handlers ==================================================================
         handler = new Handler(Looper.getMainLooper(),
@@ -158,6 +170,10 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
         configureAws();
         getPinpointManager(getApplicationContext());
         getIsSignedIn();
+        MobileAds.initialize(this);
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         AnalyticsEvent event = AnalyticsEvent.builder()
                 .name("openedApp")
@@ -294,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
         });
     }
 
-    //==================================================================== task listener ================================================================================================
+//==================================================================== task listener ================================================================================================
     @Override
     public void taskListener(TaskItem taskClass) {
         Intent intent = new Intent(MainActivity.this, TaskDetail.class);
@@ -348,6 +364,52 @@ public class MainActivity extends AppCompatActivity implements ViewAdapter.OnInt
                 error -> Log.e("Amplify.login", error.toString())
         );
         return isSingedIn[0];
+    }
+
+   //==================================================================== logged
+   public void configureLocationServices() {
+       locationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+   }
+
+    public void askLocation() {
+        LocationRequest locationRequest;
+        LocationCallback locationCallback;
+
+        locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(10000);
+        System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+
+                if (locationResult == null) {
+                    return;
+                }
+                currentLocation = locationResult.getLastLocation();
+                Log.i("Amplify_location", currentLocation.toString());
+
+                Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 10);
+                    addressString = addresses.get(0).getAddressLine(0);
+                    Log.i("Amplify address", addressString);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            askForPermission();
+            return;
+        }
+        locationProviderClient.requestLocationUpdates(locationRequest, locationCallback, getMainLooper());
+    }
+
+    public void askForPermission(){
+        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 2);
     }
 
     //============================================================================ On Resume =================================================================================================
